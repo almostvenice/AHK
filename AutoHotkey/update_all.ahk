@@ -8,7 +8,7 @@ branch := "main"  ; Change this if using a different branch
 
 ; Ensure Git exists
 if !FileExist(gitPath) {
-    MsgBox("Error: Git not found. Please install Git.")
+    MsgBox("Error: Git not found. Please install Git or set the correct path in the script.")
     ExitApp()
 }
 
@@ -46,9 +46,24 @@ GetGitPath() {
             gitPath := Trim(gitPath)
             FileDelete(A_Temp "\git_path.txt")
         }
+        
+        ; Check common Git installation paths if 'where' command fails
+        if (gitPath = "") {
+            possiblePaths := [
+                "C:\\Program Files\\Git\\cmd\\git.exe",
+                "C:\\Program Files (x86)\\Git\\cmd\\git.exe",
+                "C:\\Git\\cmd\\git.exe"
+            ]
+            for path in possiblePaths {
+                if FileExist(path) {
+                    gitPath := path
+                    break
+                }
+            }
+        }
+        
         return gitPath
     } catch {
-        return "C:\Program Files\Git\cmd\git.exe"  ; Fallback if detection fails
+        return ""  ; Return empty string if Git is not found
     }
 }
-
