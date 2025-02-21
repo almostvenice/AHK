@@ -36,12 +36,12 @@ matches:
 
   # Run a script when the trigger is typed
   - trigger: "!update"
-    replace: ""
+    replace: "{{output}}"
     vars:
-      - name: run_script
+      - name: output
         type: shell
         params:
-          cmd: '"C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe" "C:\Users\David\AppData\Roaming\espanso\AutoHotkey\update_all.ahk"'   
+          cmd: "Start-Process 'C:\\Program Files\\AutoHotkey\\v2\\AutoHotkey64.exe' -ArgumentList 'C:\\Users\\David\\AppData\\Roaming\\espanso\\AutoHotkey\\update_all.ahk'"
 
 
-  # And much more! For more information, visit the docs: https://espanso.org/docs/
+# And much more! For more information, visit the docs: https://espanso.org/docs/
