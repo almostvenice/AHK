@@ -36,12 +36,12 @@ matches:
 
   # Run a script when the trigger is typed
   - trigger: "!update"
-    replace: ""
+    replace: "All updates applied!"
     vars:
       - name: run_script
         type: shell
         params:
-          cmd: "C:\\Users\\David\\AppData\\Roaming\\espanso\\AutoHotkey\\update_all.ahk" 
+          cmd: "C:\\Users\\David\\AppData\\Roaming\\espanso\\AutoHotkey\\update_all.ahk"
           
 
 

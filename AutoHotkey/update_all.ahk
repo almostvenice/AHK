@@ -1,19 +1,21 @@
+#Requires AutoHotkey v2.0
 #NoEnv
-SetBatchLines, -1
-SendMode Input
-SetWorkingDir %A_ScriptDir%
 
-; Define repo path
 repoPath := "C:\Users\David\AppData\Roaming\espanso"
+gitPath := "C:\Program Files\Git\bin\git.exe"
 
 ; Check if Git is installed
-If !FileExist("C:\Program Files\Git\bin\git.exe") {
-    MsgBox, Git is not installed! Please install Git for Windows.
-    ExitApp
+if !FileExist(gitPath) {
+    MsgBox("Git is not installed! Please install Git for Windows.")
+    ExitApp()
 }
 
-; Open a hidden command prompt to update the repo
-Run, %ComSpec% /c cd "%repoPath%" && git pull origin main,, Hide
+; Run Git Pull in Hidden CMD
+try {
+    RunWait(Format('cmd.exe /c cd /d "{}" && "{}" pull origin main', repoPath, gitPath), , "Hide")
+    MsgBox("Espanso repo updated successfully!")
+} catch {
+    MsgBox("Error: Failed to update the Espanso repo.")
+}
 
-MsgBox, Espanso repo updated successfully!
-ExitApp
+ExitApp()
