@@ -34,4 +34,15 @@ matches:
         params:
           cmd: "echo 'Hello from your shell'"
 
+  # Run a script when the trigger is typed
+  - trigger: "!update"
+    replace: ""
+    vars:
+      - name: run_script
+        type: shell
+        params:
+          cmd: "C:\\Users\\David\\AppData\\Roaming\\espanso\\AutoHotkey\\update_all.ahk" 
+          
+
+
   # And much more! For more information, visit the docs: https://espanso.org/docs/
