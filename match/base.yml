@@ -36,7 +36,7 @@ matches:
 
   # Run a script when the trigger is typed
   - trigger: "!update"
-    replace: "All updates applied!"
+    replace: ""
     vars:
       - name: run_script
         type: shell
