@@ -41,7 +41,7 @@ matches:
       - name: run_script
         type: shell
         params:
-          cmd: "%CONFIG%/AutoHotkey/update_all.ahk"
+          cmd: '"C:\Program Files\AutoHotkey\AutoHotkey.exe" "C:\Users\David\AppData\Roaming\espanso\AutoHotkey\update_all.ahk"'
           
 
 
