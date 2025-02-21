@@ -1,21 +1,22 @@
 #Requires AutoHotkey v2.0
 
 repoPath := "C:\Users\David\AppData\Roaming\espanso"
-gitPath := "C:\Program Files\Git\bin\git.exe"
+gitPath := "C:\Program Files\Git\cmd\git.exe"
 logFile := "C:\Users\David\update_log.txt"
 
-; Clear previous logs
-FileDelete(logFile)
+; Ensure Git exists
+if !FileExist(gitPath) {
+    MsgBox("Error: Git not found at " gitPath)
+    ExitApp()
+}
+
+; Create log file if missing
+if !FileExist(logFile) {
+    FileAppend("", logFile, "UTF-8")
+}
 
 ; Log script start
 FileAppend("Script started`n", logFile, "UTF-8")
-
-; Check if Git is installed
-if !FileExist(gitPath) {
-    FileAppend("Git not found!`n", logFile, "UTF-8")
-    MsgBox("Error: Git is not installed!")
-    ExitApp()
-}
 
 ; Run Git Pull
 try {
