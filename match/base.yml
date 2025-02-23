@@ -35,7 +35,7 @@ matches:
           cmd: "echo 'Hello from your shell'"
 
  # Run a script when the trigger is typed
-  - trigger: "!update"
+  - trigger: "!upd"
     replace: "{{output}}"
     vars:
       - name: output
