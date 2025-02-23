@@ -10,6 +10,7 @@
 # parameters. Feel free to uncomment and tune them to fit your needs!
 
 # --- Toggle key
+search_shortcut: CTRL+SPACE
 
 # Customize the key used to disable and enable espanso (when double tapped)
 # Available options: CTRL, SHIFT, ALT, CMD, OFF
