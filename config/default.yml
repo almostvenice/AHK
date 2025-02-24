@@ -11,8 +11,8 @@
 
 # --- Toggle key
 search_shortcut: ALT+SHIFT+SPACE
-#enable_clipboard: true
-backend: Clipboard
+# enable_clipboard: true
+# backend: Clipboard
 
 # Customize the key used to disable and enable espanso (when double tapped)
 # Available options: CTRL, SHIFT, ALT, CMD, OFF
