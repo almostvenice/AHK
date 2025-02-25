@@ -16,9 +16,8 @@
 
         if (lastWord != "") {
             ; Send each character one by one with 1 second delay
-            Loop, % StrLen(lastWord)  ; Loop over the characters in the last word
-            {
-                Send(SubStr(lastWord, A_Index, 1))  ; Send one character at a time
+            for index, char in StrSplit(lastWord) {
+                Send(char)  ; Send one character
                 Sleep(1000)  ; Wait 1 second between characters
             }
         }
