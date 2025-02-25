@@ -13,9 +13,7 @@
         ; Escape quotes properly for PowerShell execution
         command := 'powershell -Command "' 
             . '$wshell = New-Object -ComObject WScript.Shell; ' 
-            . '$wshell.SendKeys('':'
-            . prevText
-            . ''')"'
+            . '$wshell.SendKeys(\':"' . prevText . '"\')"'
         
         Run(A_ComSpec ' /c ' command, , "Hide")
     }
