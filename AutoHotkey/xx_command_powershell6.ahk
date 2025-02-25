@@ -11,9 +11,11 @@
 
     if (prevText != "") {
         ; Properly format PowerShell command for SendKeys
-        command := 'powershell -Command "' 
-            . '$wshell = New-Object -ComObject WScript.Shell; ' 
-            . '$wshell.SendKeys(''":' prevText '"'')"'
+        command := "powershell -Command " 
+            . "'$wshell = New-Object -ComObject WScript.Shell; " 
+            . "$wshell.SendKeys(\\\":"
+            . prevText
+            . "\\\")'"
 
         Run(A_ComSpec ' /c ' command, , "Hide")
     }
