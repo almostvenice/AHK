@@ -12,7 +12,7 @@
     if (prevText != "") {
         ; Split the clipboard content by spaces and keep the last word
         words := StrSplit(prevText, " ")
-        lastWord := words[words.MaxIndex()]  ; Get the last word
+        lastWord := words[words.Length()]  ; Get the last word by using Length()
 
         if (lastWord != "") {
             ; Send each character one by one with 1 second delay
