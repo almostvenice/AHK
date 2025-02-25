@@ -3,7 +3,7 @@
 :*:xx::{
     A_Clipboard := ""  ; Clear clipboard
     Send("^+{Left 10}")  ; Select last 10 characters
-    Sleep(50)
+    Sleep(500)
     Send("^c")  ; Copy selection
     ClipWait(0.5)
 
