@@ -16,7 +16,7 @@
 
         if (lastWord != "") {
             ; Send each character one by one with 1 second delay
-            for index, char in StrSplit(lastWord) {
+            for char in StrSplit(lastWord) {
                 Send(char)  ; Send one character
                 Sleep(1000)  ; Wait 1 second between characters
             }
