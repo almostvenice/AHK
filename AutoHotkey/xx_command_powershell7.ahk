@@ -10,13 +10,13 @@
     prevText := Trim(A_Clipboard)
 
     if (prevText != "") {
-        ; Properly format PowerShell command for SendKeys
-        command := "powershell -Command " 
+        ; Properly escape quotes for PowerShell
+        command := "powershell -Command "
             . "'$wshell = New-Object -ComObject WScript.Shell; " 
-            . "$wshell.SendKeys(\\\":"
+            . "$wshell.SendKeys(':"
             . prevText
-            . "\\\")'"
+            . "')'"
 
-        Run(A_ComSpec ' /c ' command, , "Hide")
+        Run(A_ComSpec " /c " command, , "Hide")
     }
 }
