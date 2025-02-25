@@ -10,8 +10,8 @@
     prevText := Trim(A_Clipboard)
 
     if (prevText != "") {
-        ; Format as :XXXX for Espanso
-        command := "powershell -Command ""$wshell = New-Object -ComObject wscript.shell; $wshell.SendKeys(':" prevText "')"""
-        Run(A_ComSpec " /c " command, , "Hide")
+        ; Escape quotes properly for PowerShell
+        command := "powershell -Command ""$wshell = New-Object -ComObject WScript.Shell; $wshell.SendKeys(':" prevText "')"""
+        Run(A_ComSpec ' /c "' command '"', , "Hide")
     }
 }
