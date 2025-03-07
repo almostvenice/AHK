@@ -52,6 +52,7 @@ GetGitPath() {
             possiblePaths := [
                 "C:\\Program Files\\Git\\cmd\\git.exe",
                 "C:\\Program Files (x86)\\Git\\cmd\\git.exe",
+                "C:\\Program Files\\Git\\bin\\git.exe",
                 "C:\\Git\\cmd\\git.exe"
             ]
             for path in possiblePaths {
