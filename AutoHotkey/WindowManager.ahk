@@ -1,17 +1,26 @@
 #SingleInstance Force
 #Requires AutoHotkey v2.0
 
-; Initialize the GUI
-MainGui := Gui()
+; Get screen dimensions and calculate sizes
+screenWidth := A_ScreenWidth
+screenHeight := A_ScreenHeight
+halfHeight := Floor(screenHeight / 2)  ; Ensure we get a clean integer division
+
+; Initialize the GUI with specific options
+MainGui := Gui("+AlwaysOnTop +Border")
 MainGui.Title := "Window Manager"
+
+; Set initial window position and size
+MainGui.Move(0, 0, screenWidth, halfHeight)
 
 ; Add controls info text
 MainGui.SetFont("s18 bold")  ; Set larger, bold font for controls text
-MainGui.Add("Text", "h120", "Controls:`nEnter - Activate Window`nShift+Enter - Close Window`nCtrl+R - Refresh List`n")
+MainGui.Add("Text", "h120", "Enter - Activate Window`nShift+Enter - Close Window`nCtrl+R - Refresh List`n")
+
 
 ; Set font for ListView
 MainGui.SetFont("s16")  ; Slightly smaller than controls text, but still larger than default
-LV := MainGui.Add("ListView", "w1100 h500", ["#", "Open", "Close", "Window Title", "Process Name", "Window ID"])
+LV := MainGui.Add("ListView", "w" screenWidth - 20 " h" halfHeight - 600, ["#", "Open", "Close", "Window Title", "Process Name", "Window ID"])
 
 ; Set font back to normal for buttons
 MainGui.SetFont("s10")
@@ -20,7 +29,7 @@ MainGui.Add("Button", "x+10", "Activate Selected").OnEvent("Click", ActivateSele
 MainGui.Add("Button", "x+10", "Close Selected").OnEvent("Click", CloseSelected)
 
 ; Show the GUI
-MainGui.Show()
+MainGui.Show("x0 y0")
 
 ; Initial population of the list
 RefreshList()
