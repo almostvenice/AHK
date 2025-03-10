@@ -36,7 +36,10 @@ RefreshList()
 
 ; Add hotkeys
 #HotIf WinActive("Window Manager")
-Enter::ActivateSelected()
+Enter::
+{
+    ActivateSelected()
+}
 +Enter::CloseSelected()  ; Shift+Enter
 ^r::RefreshList()       ; Ctrl+R
 
@@ -115,6 +118,7 @@ ActivateSelected(*) {
         winId := LV.GetText(row, 6)
         try {
             WinActivate(winId)
+            MainGui.Hide()  ; Hide the GUI after activating a window
         } catch as err {
             MsgBox("Could not activate window: " . err.Message)
         }
@@ -138,6 +142,7 @@ ActivateByNumber(num) {
         winId := LV.GetText(num, 6)
         try {
             WinActivate(winId)
+            MainGui.Hide()  ; Hide the GUI after activating a window by number
         } catch as err {
             MsgBox("Could not activate window: " . err.Message)
         }
