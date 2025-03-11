@@ -1,13 +1,13 @@
 #Requires AutoHotkey v2.0
 
 ; Convert xxz to Ctrl + Alt + Shift + Space
-:*:xxz::
+:*:xxs::
 {
     Send "^!+{Space}"
 }
 
 ;//! Convert xxz to Ctrl + Alt + Shift + Space
-:*:xxy::
+:*:xxz::
 {
     Send "^!+{Space}"
 }
