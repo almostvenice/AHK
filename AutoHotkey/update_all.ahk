@@ -24,7 +24,7 @@ FileAppend("Script started at " A_Now "`n", logFile, "UTF-8")
 try {
     RunWait(Format('cmd.exe /c cd /d "{}" && "{}" pull origin {}', repoPath, gitPath, branch), , "Hide")
     FileAppend("Git pull successful at " A_Now "`n", logFile, "UTF-8")
-    MsgBox("Espanso repo updated successfully from commit on March 21st @ 1:50pm")
+    MsgBox("Espanso repo updated successfully from commit on March 21st @ 1:55pm")
 } catch {
     FileAppend("Git pull failed at " A_Now "`n", logFile, "UTF-8")
     MsgBox("Error: Failed to update the Espanso repo.")
