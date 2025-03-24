@@ -22,7 +22,25 @@ FileAppend("Script started at " A_Now "`n", logFile, "UTF-8")
 
 ; Run Git Pull
 try {
+    ; First, get the commit hash before pull
+    oldHash := ""
+    RunWait(Format('cmd.exe /c cd /d "{}" && "{}" rev-parse HEAD > "%TEMP%\old_hash.txt"', repoPath, gitPath), , "Hide")
+    if FileExist(A_Temp "\old_hash.txt") {
+        oldHash := Trim(FileRead(A_Temp "\old_hash.txt"))
+        FileDelete(A_Temp "\old_hash.txt")
+    }
+
+    ; Do the pull
     RunWait(Format('cmd.exe /c cd /d "{}" && "{}" pull origin {}', repoPath, gitPath, branch), , "Hide")
+    
+    ; Get new hash
+    newHash := ""
+    RunWait(Format('cmd.exe /c cd /d "{}" && "{}" rev-parse HEAD > "%TEMP%\new_hash.txt"', repoPath, gitPath), , "Hide")
+    if FileExist(A_Temp "\new_hash.txt") {
+        newHash := Trim(FileRead(A_Temp "\new_hash.txt"))
+        FileDelete(A_Temp "\new_hash.txt")
+    }
+
     ; Get the latest commit info
     commitInfo := ""
     RunWait(Format('cmd.exe /c cd /d "{}" && "{}" log -1 --pretty=format:"Latest commit: %%h - %%s (%%cr)" > "%TEMP%\commit_info.txt"', repoPath, gitPath), , "Hide")
@@ -30,8 +48,14 @@ try {
         commitInfo := FileRead(A_Temp "\commit_info.txt")
         FileDelete(A_Temp "\commit_info.txt")
     }
-    FileAppend("Git pull successful at " A_Now "`n", logFile, "UTF-8")
-    MsgBox(commitInfo ? commitInfo : "Espanso repo updated successfully")
+
+    if (oldHash != newHash) {
+        FileAppend("Git pull successful - Updated from " oldHash " to " newHash " at " A_Now "`n", logFile, "UTF-8")
+        MsgBox("Updates pulled successfully!`n" commitInfo)
+    } else {
+        FileAppend("Git pull completed - Already up to date at " A_Now "`n", logFile, "UTF-8")
+        MsgBox("Already up to date!`n" commitInfo)
+    }
 } catch {
     FileAppend("Git pull failed at " A_Now "`n", logFile, "UTF-8")
     MsgBox("Error: Failed to update the Espanso repo.")
