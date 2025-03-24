@@ -43,7 +43,7 @@ try {
 
     ; Get the latest commit info
     commitInfo := ""
-    RunWait(Format('cmd.exe /c cd /d "{}" && "{}" log -1 --pretty=format:"Latest commit: %%h - %%s (%%cr)" > "%TEMP%\commit_info.txt"', repoPath, gitPath), , "Hide")
+    RunWait(Format('cmd.exe /c cd /d "{}" && "{}" log -1 --pretty=format:"Latest commit: %h - %s (%cr)" > "%TEMP%\commit_info.txt"', repoPath, gitPath), , "Hide")
     if FileExist(A_Temp "\commit_info.txt") {
         commitInfo := FileRead(A_Temp "\commit_info.txt")
         FileDelete(A_Temp "\commit_info.txt")
