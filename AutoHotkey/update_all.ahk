@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0
 
 ; Define paths dynamically
-repoPath := A_AppData "\espanso"
+repoPath := A_ScriptDir "\.."  ; Go up one directory from the script location
 gitPath := GetGitPath()  ; Get Git executable dynamically
 logFile := A_Desktop "\update_log.txt"  ; Store log on Desktop for easier access
 branch := "main"  ; Change this if using a different branch
