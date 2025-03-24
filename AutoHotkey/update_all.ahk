@@ -51,6 +51,19 @@ try {
 
     if (oldHash != newHash) {
         FileAppend("Git pull successful - Updated from " oldHash " to " newHash " at " A_Now "`n", logFile, "UTF-8")
+        
+        ; Launch or activate PhraseExpander
+        try {
+            if !WinExist("ahk_exe PhraseExpander.exe") {
+                Run('"C:\Program Files\PhraseExpander\PhraseExpander.exe"')
+                Sleep(3000)  ; Wait 3 seconds
+            }
+            WinActivate("ahk_exe PhraseExpander.exe")
+            Sleep(4000)  ; Wait 4 seconds
+            Send("^{F5}")  ; Send Ctrl+F5
+            Sleep(2000)  ; Wait a bit for the update to complete
+        }
+        
         MsgBox("Updates pulled successfully!`n" commitInfo)
     } else {
         FileAppend("Git pull completed - Already up to date at " A_Now "`n", logFile, "UTF-8")
