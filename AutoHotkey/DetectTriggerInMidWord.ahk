@@ -60,22 +60,43 @@ try {
     
     Send("{Right}")  ; Unselect
     
-    ; First check for exact triggers
+    ; First check for all triggers and find the rightmost one
+    rightmostTrigger := ""
+    rightmostPos := -1
+    
     for triggerKey in triggers {
-        if InStr(currentWord, triggerKey) {
-            ProcessTrigger(currentWord, triggerKey)
-            A_Clipboard := savedClip
-            return
+        pos := InStr(currentWord, triggerKey)
+        while (pos > 0) {  ; Find all occurrences
+            if (pos > rightmostPos) {
+                rightmostPos := pos
+                rightmostTrigger := triggerKey
+            }
+            pos := InStr(currentWord, triggerKey, , pos + 1)
         }
     }
     
-    ; Then check for 2-letter triggers
+    ; If we found a trigger, process it
+    if (rightmostTrigger != "") {
+        ProcessTrigger(currentWord, rightmostTrigger)
+        A_Clipboard := savedClip
+        return
+    }
+    
+    ; Then check for 2-letter triggers if no full trigger was found
     for shortKey in shortTriggers {
-        if InStr(currentWord, shortKey) {
-            ProcessTrigger(currentWord, shortKey)
-            A_Clipboard := savedClip
-            return
+        pos := InStr(currentWord, shortKey)
+        while (pos > 0) {  ; Find all occurrences
+            if (pos > rightmostPos) {
+                rightmostPos := pos
+                rightmostTrigger := shortKey
+            }
+            pos := InStr(currentWord, shortKey, , pos + 1)
         }
+    }
+    
+    ; If we found a short trigger, process it
+    if (rightmostTrigger != "") {
+        ProcessTrigger(currentWord, rightmostTrigger)
     }
     
     ; Restore clipboard
@@ -83,14 +104,13 @@ try {
 }
 
 ProcessTrigger(currentWord, trigger) {
-    ; Add spaces around trigger
     Send("{Backspace " . StrLen(currentWord) . "}")  ; Delete current word
-    parts := StrSplit(currentWord, trigger)
-    if (parts.Length > 1) {
-        Send(parts[1])  ; Text before trigger
-        Send(" " . trigger)  ; Trigger with spaces
-        Send(SubStr(currentWord, StrLen(parts[1]) + StrLen(trigger) + 1))  ; Rest of word
-    } else {
-        Send(currentWord)  ; Just in case
-    }
+    beforeTrigger := SubStr(currentWord, 1, InStr(currentWord, trigger) - 1)  ; Text before rightmost trigger
+    afterTrigger := SubStr(currentWord, InStr(currentWord, trigger) + StrLen(trigger))  ; Text after rightmost trigger
+    
+    if (beforeTrigger != "")
+        Send(beforeTrigger)  ; Text before trigger
+    Send(" " . trigger)  ; Trigger with spaces
+    if (afterTrigger != "")
+        Send(afterTrigger)  ; Rest of word
 }
