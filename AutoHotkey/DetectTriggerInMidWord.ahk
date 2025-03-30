@@ -1,6 +1,21 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
+; ; Create debug window
+; debugGui := Gui()
+; debugGui.Opt("+AlwaysOnTop +Resize")
+; debugGui.SetFont("s10", "Consolas")
+; debugLog := debugGui.Add("Edit", "vMyEdit w600 h400 ReadOnly")
+; debugGui.Title := "Trigger Debug Log"
+; debugGui.Show()
+
+; ; Function to log debug messages
+; LogDebug(message) {
+;     global debugLog
+;     debugLog.Value := debugLog.Value . message . "`n"
+;     debugLog.Opt("0x100000")  ; Scroll to bottom
+; }
+
 ; Load triggers from CSV
 triggers := Map()
 shortTriggers := Map()  ; Map for 2-letter triggers
@@ -17,20 +32,38 @@ try {
         if (fields.Length >= 3 && fields[2] != "") {  ; Check if abbreviation exists
             trigger := fields[2]
             if (SubStr(trigger, 1, 1) = "x") {  ; Only store triggers starting with x
-                triggers[trigger] := true
-                ; Store first two letters as a short trigger
-                shortKey := SubStr(trigger, 1, 2)
-                if (StrLen(trigger) > 2)
+                if (StrLen(trigger) > 2) {
+                    triggers[trigger] := true  ; Only add to full triggers if longer than 2 chars
+                    shortKey := SubStr(trigger, 1, 2)
                     shortTriggers[shortKey] := true
+                } else {
+                    shortTriggers[trigger] := true  ; Add 2-letter triggers directly to short triggers
+                }
             }
         }
     }
-    if (triggers.Count = 0) {
-        MsgBox("No triggers found starting with x")
+
+    ; Log loaded triggers
+    ; LogDebug("=== Loaded Triggers (>2 chars) ===")
+    triggerList := ""
+    for triggerKey in triggers {
+        triggerList .= triggerKey . ", "
+    }
+    ; LogDebug(triggerList)
+    
+    ; LogDebug("`n=== Short Triggers (2 chars) ===")
+    shortList := ""
+    for shortKey in shortTriggers {
+        shortList .= shortKey . ", "
+    }
+    ; LogDebug(shortList)
+
+    if (triggers.Count = 0 && shortTriggers.Count = 0) {
+        ; LogDebug("`nError: No triggers found starting with x")
         ExitApp
     }
 } catch Error as e {
-    MsgBox("Error loading triggers: " e.Message)
+    ; LogDebug("`nError loading triggers: " . e.Message)
     ExitApp
 }
 
@@ -60,41 +93,28 @@ try {
     
     Send("{Right}")  ; Unselect
     
-    ; First check for all triggers and find the rightmost one
+    ; Find the rightmost trigger
     rightmostTrigger := ""
     rightmostPos := -1
     
+    ; Check all triggers (both full and short) at once and find the rightmost one
     for triggerKey in triggers {
-        pos := InStr(currentWord, triggerKey)
-        while (pos > 0) {  ; Find all occurrences
-            if (pos > rightmostPos) {
-                rightmostPos := pos
-                rightmostTrigger := triggerKey
-            }
-            pos := InStr(currentWord, triggerKey, , pos + 1)
+        pos := InStr(currentWord, triggerKey, , -1)  ; Start from the end
+        if (pos > rightmostPos) {
+            rightmostPos := pos
+            rightmostTrigger := triggerKey
+        }
+    }
+    
+    for shortKey in shortTriggers {
+        pos := InStr(currentWord, shortKey, , -1)  ; Start from the end
+        if (pos > rightmostPos) {
+            rightmostPos := pos
+            rightmostTrigger := shortKey
         }
     }
     
     ; If we found a trigger, process it
-    if (rightmostTrigger != "") {
-        ProcessTrigger(currentWord, rightmostTrigger)
-        A_Clipboard := savedClip
-        return
-    }
-    
-    ; Then check for 2-letter triggers if no full trigger was found
-    for shortKey in shortTriggers {
-        pos := InStr(currentWord, shortKey)
-        while (pos > 0) {  ; Find all occurrences
-            if (pos > rightmostPos) {
-                rightmostPos := pos
-                rightmostTrigger := shortKey
-            }
-            pos := InStr(currentWord, shortKey, , pos + 1)
-        }
-    }
-    
-    ; If we found a short trigger, process it
     if (rightmostTrigger != "") {
         ProcessTrigger(currentWord, rightmostTrigger)
     }
@@ -104,13 +124,20 @@ try {
 }
 
 ProcessTrigger(currentWord, trigger) {
-    Send("{Backspace " . StrLen(currentWord) . "}")  ; Delete current word
-    beforeTrigger := SubStr(currentWord, 1, InStr(currentWord, trigger) - 1)  ; Text before rightmost trigger
-    afterTrigger := SubStr(currentWord, InStr(currentWord, trigger) + StrLen(trigger))  ; Text after rightmost trigger
+    ; ; Log debug message
+    ; LogDebug("`nProcessing word: " . currentWord . "`nTrigger found: " . trigger . "`nPosition: " . InStr(currentWord, trigger, , -1))
+
+    ; Delete the entire word first
+    Send("{Backspace " . StrLen(currentWord) . "}")
+
+    ; Find the position of the rightmost trigger
+    triggerPos := InStr(currentWord, trigger, , -1)  ; Start from the end to find last occurrence
     
+    ; Split the word into parts
+    beforeTrigger := SubStr(currentWord, 1, triggerPos - 1)  ; Text before the trigger
+    
+    ; Reconstruct the word: text before trigger + space + trigger
     if (beforeTrigger != "")
-        Send(beforeTrigger)  ; Text before trigger
-    Send(" " . trigger)  ; Trigger with spaces
-    if (afterTrigger != "")
-        Send(afterTrigger)  ; Rest of word
+        Send(beforeTrigger)
+    Send(" " . trigger)  ; Always add a space before the trigger
 }
