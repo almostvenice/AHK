@@ -193,13 +193,12 @@ can I please have a blue pill and chapstick,ccbc,,requests,can I please have a b
 can I please have some chapstick,ccc,,requests,can I please have some chapstick
 can I please have some water,ccw,,requests,can I please have some water
 "can I please have ssome water, a blue pill, and...",ccwbc,,requests,"can I please have ssome water, a blue pill, and chapstick"
-Docs-Syntax,xbsyntax,,scripts,{#url https://docs.google.com/spreadsheets/d/1X_ZBXODaMPNx9HGMSgQt5ggpw12DYJITHNocDrnqQqM/edit?gid=1005758108#gid=1005758108#}
-Docs-TechTracker,xbtechtracker,,scripts,{#url https://docs.google.com/document/d/1NyhqufOJqxWjPV-d_IUHMUgqPR0WKcoEXAh4lTrvkXA/edit?tab=t.sm4hg8iffusi#}
-NextUpTalker,xnext,,scripts,{#run C:\Program Files (x86)\NextUp Talker\NextUpTalker.exe -[existing=1]#}
-RestartGrid3,xgridrestart,,scripts,{#run C:\Users\pyjoh\Documents\Espanso-AHK\AutoHotkey\RestartGrid3.ahk -[admin=1]#}
-Turn on AHK Detection,xx,,scripts,{#run C:\Users\pyjoh\Documents\Espanso-AHK\AutoHotkey\TextExpansion.ahk#}{#run C:\Users\pyjoh\Documents\Espanso-AHK\AutoHotkey\DetectTriggerInMidWord.ahk -[admin=1]#}
-Update Git Repo,xupdate,,scripts,{#run C:\Users\pyjoh\Documents\Espanso-AHK\AutoHotkey\update_all.ahk#}
-WindowManager,xa,,scripts,{#run C:\Users\pyjoh\Documents\Espanso-AHK\AutoHotkey\WindowManager.ahk#}
+Docs-Syntax,xxbsyntax,,scripts,{#url https://docs.google.com/spreadsheets/d/1X_ZBXODaMPNx9HGMSgQt5ggpw12DYJITHNocDrnqQqM/edit?gid=1005758108#gid=1005758108#}
+Docs-TechTracker,xxbtechtracker,,scripts,{#url https://docs.google.com/document/d/1NyhqufOJqxWjPV-d_IUHMUgqPR0WKcoEXAh4lTrvkXA/edit?tab=t.sm4hg8iffusi#}
+RestartGrid3,xxgridrestart,,scripts,{#run C:\Users\pyjoh\Documents\Espanso-AHK\AutoHotkey\RestartGrid3.ahk -[admin=1]#}
+Turn on AHK Detection, xx,,scripts,{#run C:\Users\pyjoh\Documents\Espanso-AHK\AutoHotkey\TextExpansion.ahk#}{#run C:\Users\pyjoh\Documents\Espanso-AHK\AutoHotkey\DetectTriggerInMidWord.ahk -[admin=1]#}
+Update Git Repo,xxupdate,,scripts,{#run C:\Users\pyjoh\Documents\Espanso-AHK\AutoHotkey\update_all.ahk#}
+WindowManager, xxa,,scripts,{#run C:\Users\pyjoh\Documents\Espanso-AHK\AutoHotkey\WindowManager.ahk#}
 calm down Tootin' Putin,cdb,,text_shortcuts,calm down Tootin' Putin
 Give me about,gma,,text_shortcuts,Give me about
 Give me about 1 hour,gma1h,,text_shortcuts,Give me about 1 hour
