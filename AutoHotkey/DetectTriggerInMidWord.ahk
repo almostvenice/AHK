@@ -9,7 +9,7 @@
     thisX := A_TickCount
     
     ; Check if this x was typed within 500ms of the last x
-    if (thisX - lastX < 5000) {
+    if (thisX - lastX < 3000) {
         ; Two x's detected, give PhraseExpander a moment
         Sleep(1000)
         
@@ -31,6 +31,8 @@
         
         ; First check for autosuggest
         if (!CheckAutosuggest()) {
+            ; Remove the previously typed xx
+            Send("{Backspace 2}")
             ; Type xx with a space and check again
             Send(" xx")
             Sleep(100)  ; Wait for autosuggest
