@@ -6,10 +6,11 @@
 ~x::
 {
     static lastX := 0
+    static lastKey := ""
     thisX := A_TickCount
     
-    ; Check if this x was typed within 500ms of the last x
-    if (thisX - lastX < 3000) {
+    ; Check if this x was typed within 3000ms AND the last key was also 'x'
+    if (thisX - lastX < 3000 && A_PriorKey = "x") {
         ; Two x's detected, give PhraseExpander a moment
         Sleep(1000)
         
@@ -53,12 +54,15 @@
                     WinActivate(focusedTitle)
                 
                 Sleep(100)  ; Give window activation a moment
+                ; Remove the previously typed xx
+            Send("{Backspace 2}")
                 ; Type xx to trigger PhraseExpander
-                Send(" xx")
+                Send("xx")
             }
         }
         lastX := 0  ; Reset the timer
     } else {
         lastX := thisX  ; Store the time of this x press
+        lastKey := A_PriorKey  ; Store the last key pressed
     }
 }

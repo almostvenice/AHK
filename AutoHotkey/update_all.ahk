@@ -8,7 +8,7 @@ branch := "main"  ; Change this if using a different branch
 
 ; Ensure Git exists
 if !FileExist(gitPath) {
-    MsgBox("Error: Git not found. Please install Git or set the correct path in the script.")
+    MsgBox("Error: Git not found. Please install Git or set the correct path in the script.", "Update Status", "T5")
     ExitApp()
 }
 
@@ -64,14 +64,14 @@ try {
             Sleep(2000)  ; Wait a bit for the update to complete
         }
         
-        MsgBox("Updates pulled successfully!`n" commitInfo)
+        MsgBox("Updates pulled successfully!`n" commitInfo, "Update Status", "T5")  ; T5 = timeout after 5 seconds
     } else {
         FileAppend("Git pull completed - Already up to date at " A_Now "`n", logFile, "UTF-8")
-        MsgBox("Already up to date!`n" commitInfo)
+        MsgBox("Already up to date!`n" commitInfo, "Update Status", "T5")  ; T5 = timeout after 5 seconds
     }
 } catch {
     FileAppend("Git pull failed at " A_Now "`n", logFile, "UTF-8")
-    MsgBox("Error: Failed to update the Espanso repo.")
+    MsgBox("Error: Failed to update the Espanso repo.", "Update Status", "T5")  ; T5 = timeout after 5 seconds
 }
 
 ExitApp()
