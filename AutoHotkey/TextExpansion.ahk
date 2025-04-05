@@ -2,13 +2,13 @@
 #SingleInstance Force
 
 ; Convert xxz to Ctrl + Alt + Shift + Space
-:*:xxs::
+:*:xss::
 {
     Send "^!+{Space}"
 }
 
 ;//! Convert xxz to Ctrl + Alt + Shift + Space
-:*:xxz::
+:*:xzz::
 {
     Send "^!+{Space}"
 }
