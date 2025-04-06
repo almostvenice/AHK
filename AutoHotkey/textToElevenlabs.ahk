@@ -181,10 +181,16 @@ processBtn.OnEvent("Click", ProcessTTS)
 processBtn.Opt("+Background0x4D4D4D")  ; Dark button color
 processBtn.SetFont("cWhite")
 
-replayBtn := debugGui.Add("Button", "x+10 w100 h30", "Replay (!s)")
+replayBtn := debugGui.Add("Button", "x+10 w100 h30", "Replay (ALT+S)")
 replayBtn.OnEvent("Click", ReplayAudio)
 replayBtn.Opt("+Background0x4D4D4D")
 replayBtn.SetFont("cWhite")
+
+; Add button for exiting
+exitBtn := debugGui.Add("Button", "x+10 w100 h30", "Exit (ALT+E)")
+exitBtn.OnEvent("Click", (*) => ExitApp())
+exitBtn.Opt("+Background0x4D4D4D")
+exitBtn.SetFont("cWhite")
 
 debugGui.Show()
 

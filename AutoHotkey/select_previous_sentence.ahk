@@ -16,7 +16,15 @@ catch {
 }
 
 ; Keep selecting until we find a period
-while (!InStr(A_Clipboard, ". ")) {
+while (true) {
+    ; If we have more than 5 characters selected, check for period
+    if (StrLen(A_Clipboard) < 5 && InStr(A_Clipboard, ". ")) {
+        Send "{Left}"  ; Move left to exclude the period
+    }
+    if (StrLen(A_Clipboard) > 5 && InStr(A_Clipboard, ".")) {
+        break
+    }
+    
     Send "+{Left}"
     A_Clipboard := ""
     Send "^c"
@@ -34,5 +42,11 @@ while (!InStr(A_Clipboard, ". ")) {
 
 Send "+{Right}"
 
-; Restore original clipboard
-A_Clipboard := ClipSaved
+; Copy the final selection to clipboard
+Send "^c"
+try ClipWait(1)
+
+; Run the text-to-speech script
+Run A_ScriptDir "\textToElevenlabs.ahk"
+
+; No need to restore original clipboard since we want to keep the selection
