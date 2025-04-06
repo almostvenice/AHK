@@ -3,66 +3,59 @@
 
 ; Hook keyboard input
 #HotIf true
-~x::
-{
-    static lastX := 0
-    static lastKey := ""
-    thisX := A_TickCount
-    
-    ; Check if this x was typed within 3000ms AND the last key was also 'x'
-    if (thisX - lastX < 3000 && A_PriorKey = "x") {
-        ; Two x's detected, give PhraseExpander a moment
-        Sleep(1000)
-        
-        ; Function to check for autosuggest window
-        CheckAutosuggest() {
+
+; Function to check for autosuggest window
+CheckAutosuggest() {
+    try {
+        windows := WinGetList()
+        for hwnd in windows {
             try {
-                windows := WinGetList()
-                for hwnd in windows {
-                    try {
-                        if (WinGetProcessName("ahk_id " hwnd) = "PhraseExpander.exe" 
-                            && InStr(WinGetTitle("ahk_id " hwnd), "Autosuggest")) {
-                            return true
-                        }
-                    }
+                if (WinGetProcessName("ahk_id " hwnd) = "PhraseExpander.exe" 
+                    && InStr(WinGetTitle("ahk_id " hwnd), "Autosuggest")) {
+                    return true
                 }
             }
-            return false
         }
+    }
+    return false
+}
+
+; Function to handle double character triggers
+HandleDoubleTrigger(char) {
+    static lastTime := Map()
+    thisTime := A_TickCount
+
+    ; Initialize the time for this character if not exists
+    if !lastTime.Has(char)
+        lastTime[char] := 0
+    
+    ; Check if this character was typed within 3000ms AND the last key was also the same character
+    if (thisTime - lastTime[char] < 3000 && A_PriorKey = char) {
+        ; Two identical characters detected, give PhraseExpander a moment
+        Sleep(1000)
         
         ; First check for autosuggest
         if (!CheckAutosuggest()) {
-            ; Remove the previously typed xx
+            ; Remove the previously typed characters
             Send("{Backspace 2}")
-            ; Type xx with a space and check again
-            Send(" xx")
+            ; Type characters with a space and check again
+            Send(" " char char)
             Sleep(100)  ; Wait for autosuggest
             
             ; Second check for autosuggest
             if (!CheckAutosuggest()) {
-                ; Store current window title since we'll need to restore focus
-                focusedTitle := WinGetTitle("A")
-                
-                ; Try to ensure focus by sending Alt+Tab twice
-                Send("!{Tab}")
-                Sleep(50)
-                Send("!{Tab}")
-                Sleep(100)
-                
-                ; Try to activate the window by title if we have it
-                if (focusedTitle)
-                    WinActivate(focusedTitle)
-                
-                Sleep(100)  ; Give window activation a moment
-                ; Remove the previously typed xx
-            Send("{Backspace 2}")
-                ; Type xx to trigger PhraseExpander
-                Send("xx")
+                ; If still no autosuggest, remove the space and characters
+                Send("{Backspace 3}")
+                ; Retype the characters
+                Send(char char)
             }
         }
-        lastX := 0  ; Reset the timer
-    } else {
-        lastX := thisX  ; Store the time of this x press
-        lastKey := A_PriorKey  ; Store the last key pressed
     }
+    
+    ; Update last time for this character
+    lastTime[char] := thisTime
 }
+
+; Hotkeys for each trigger
+~x::HandleDoubleTrigger("x")
+~z::HandleDoubleTrigger("z")
