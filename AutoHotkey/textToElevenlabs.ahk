@@ -156,7 +156,7 @@ SortByTime(files) {
 }
 
 ; Create debug GUI with dark mode
-debugGui := Gui("+AlwaysOnTop", "ElevenLabs TTS Debug")
+debugGui := Gui(, "ElevenLabs TTS Debug")
 debugGui.BackColor := "0x2D2D2D"  ; Dark background
 debugGui.SetFont("s10 cWhite", "Segoe UI")
 
