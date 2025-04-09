@@ -50,9 +50,7 @@ while (true) {
     currentLen := StrLen(A_Clipboard)
     if (currentLen = prevClipLen) {
         unchangedCount++
-        LogMessage("Selection unchanged - Count: " unchangedCount)
         if (unchangedCount >= maxUnchangedCount) {
-            LogMessage("STOP: Selection hasn't changed for " unchangedCount " iterations")
             break  ; We're probably at the beginning of the text area
         }
     } else {
@@ -62,31 +60,25 @@ while (true) {
 
     ; If we have less than 5 characters selected, check for period
     if (StrLen(A_Clipboard) < 5 && InStr(A_Clipboard, ".")) {
-        LogMessage("Found period in first 5 characters, moving left to exclude it")
         Send "{Left}"  ; Move left to exclude the period
     }
 
     ; Continue selecting to the left
-    LogMessage("Continuing selection to the left")
     Send "+{Left}"
     A_Clipboard := ""
     Send "^c"
     try ClipWait(1)
     catch {
-        LogMessage("ERROR: Failed to get clipboard content")
         A_Clipboard := ClipSaved
         return
     }
-    LogMessage("New selection: '" A_Clipboard "'")
 
     ; If we're at the start of a line, stop - we've reached a paragraph boundary
     if (SubStr(A_Clipboard, 1, 1) = "`n") {
-        LogMessage("STOP: Found newline at start of selection - paragraph boundary")
         break
     }
 }
 
-LogMessage("Selection loop complete, finalizing selection")
 Send "+{Right}"
 
 ; Copy the final selection to clipboard
@@ -94,15 +86,11 @@ A_Clipboard := ""
 Send "^c"
 try ClipWait(1)
 catch {
-    LogMessage("ERROR: Failed to get final clipboard content")
     A_Clipboard := ClipSaved
     return
 }
-LogMessage("Final selection: '" A_Clipboard "'")
 
 ; Run the text-to-speech script
-LogMessage("Running text-to-speech script")
 Run A_ScriptDir "\textToElevenlabs.ahk"
 
 ; No need to restore original clipboard since we want to keep the selection
-LogMessage("Script completed successfully")
