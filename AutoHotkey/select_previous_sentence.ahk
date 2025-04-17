@@ -19,7 +19,7 @@ catch {
 prevClipLen := 0
 unchangedCount := 0
 maxUnchangedCount := 3  ; Stop after this many attempts with no change
-maxSelectionSize := 1000  ; Maximum selection size to prevent runaway selection
+maxSelectionSize := 1000  ; Maximum character selection size to prevent runaway selection (About 150 words)
 
 ; Keep selecting until we find a period or beginning of paragraph
 while (true) {
@@ -78,8 +78,6 @@ while (true) {
         break
     }
 }
-
-Send "+{Right}"
 
 ; Copy the final selection to clipboard
 A_Clipboard := ""
