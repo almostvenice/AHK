@@ -192,7 +192,14 @@ exitBtn.OnEvent("Click", (*) => ExitApp())
 exitBtn.Opt("+Background0x4D4D4D")
 exitBtn.SetFont("cWhite")
 
-debugGui.Show()
+; Set a fixed size for the window
+debugGui.Opt("+MinSize400x300 +MaxSize400x300")
+
+; Show the window
+debugGui.Show("w400")
+
+; Move window to fixed position that we know works
+SetTimer () => debugGui.Move(500, 20), -100
 
 ; Main function to process text-to-speech
 ProcessTTS(*) {
