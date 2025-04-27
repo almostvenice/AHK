@@ -328,9 +328,29 @@ statusText.Opt("+Background" . mainGui.BackColor)
 
 ; Current text display
 mainGui.Add("Text", "x10 y+10 w380", "Current Text:").SetFont("cWhite")
-currentText := mainGui.Add("Edit", "x10 y+5 w380 h60 ReadOnly -E0x200", "")
+currentText := mainGui.Add("Edit", "x10 y+10 w380 h60 vCurrentText", "")
 currentText.SetFont("s10")
 currentText.Opt("+Background0x3D3D3D cWhite")
+
+; Add hotkeys
+!e::
+{
+    global currentText
+    currentText.Focus()
+    statusText.Value := "Ready to edit. Press Alt+S to send to ElevenLabs."
+}
+
+!s::
+{
+    global currentText
+    text := currentText.Value
+    if (StrLen(Trim(text)) = 0) {
+        statusText.Value := "Error: No text to send!"
+        return
+    }
+    A_Clipboard := text  ; Set clipboard to current text
+    ProcessTTS()  ; Process the text
+}
 
 ; History list
 mainGui.Add("Text", "x10 y+10 w380", "History:").SetFont("cWhite")
@@ -356,7 +376,7 @@ CreateStyledButton(text, x, handler) {
 }
 
 CreateStyledButton("Play (Enter)", "x10", PlayCurrentAudio)
-CreateStyledButton("Open Cache (Space)", "x+10", OpenCache)
+CreateStyledButton("Open Cache (Alt+Space)", "x+10", OpenCache)
 CreateStyledButton("Copy File (Alt+C)", "x+10", CopyAudioFile)
 CreateStyledButton("Move Right (Alt+R)", "x+10", MoveAudioRight)
 CreateStyledButton("Recent", "x+10", ShowRecentlyPlayed)
@@ -755,8 +775,8 @@ Enter::PlayCurrentAudio()
 ; ESC to exit
 Esc::ExitApp()
 
-; Space to open cache
-Space::OpenCache()
+; Alt + Space to open cache
+!space::OpenCache()
 
 ; Alt + R to move file right
 !r::MoveAudioRight()
