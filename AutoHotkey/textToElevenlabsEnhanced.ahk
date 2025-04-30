@@ -378,7 +378,6 @@ CreateStyledButton(text, x, handler) {
 CreateStyledButton("Play (Enter)", "x10", PlayCurrentAudio)
 CreateStyledButton("Open Cache (Alt+Space)", "x+10", OpenCache)
 CreateStyledButton("Copy File (Alt+C)", "x+10", CopyAudioFile)
-CreateStyledButton("Move Right (Alt+R)", "x+10", MoveAudioRight)
 CreateStyledButton("Recent", "x+10", ShowRecentlyPlayed)
 
 ; Show the window
@@ -410,14 +409,13 @@ ProcessTTS(*) {
     ; Check for existing audio
     existing := FindExistingAudio(text)
     if (existing["file"]) {
-        statusText.Value := "Found existing audio, playing..."
+        statusText.Value := "Found existing audio. Press Enter to play."
         lastAudioFile := existing["file"]
         currentSequenceId := existing["sequenceId"]
         AddDebug("Updating cache with file: " lastAudioFile)
         UpdateCache(lastAudioFile)
         HistoryPush(audioHistory, lastAudioFile, text)
         UpdateHistoryDisplay()
-        PlayCurrentAudio()
         return
     }
     
@@ -768,21 +766,6 @@ CopyAudioFile(*) {
     statusText.Value := "Audio file copied to clipboard"
 }
 
-MoveAudioRight(*) {
-    if !(lastAudioFile && FileExist(lastAudioFile)) {
-        statusText.Value := "No audio file to move!"
-        return
-    }
-    
-    ; Create destination directory if it doesn't exist
-    destDir := A_ScriptDir "\moved_audio"
-    if !DirExist(destDir)
-        DirCreate(destDir)
-        
-    destFile := destDir "\" FileGetName(lastAudioFile)
-    FileCopy(lastAudioFile, destFile, 1)
-    statusText.Value := "Audio file moved to: " destFile
-}
 
 ; ========== Hotkeys ==========
 ; Enter to play current audio
@@ -793,9 +776,6 @@ Esc::ExitApp()
 
 ; Alt + Space to open cache
 !space::OpenCache()
-
-; Alt + R to move file right
-!r::MoveAudioRight()
 
 ; Alt + C to copy file
 !c::CopyAudioFile()
