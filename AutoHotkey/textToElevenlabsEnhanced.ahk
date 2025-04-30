@@ -767,9 +767,49 @@ CopyAudioFile(*) {
 }
 
 
+PlayAudioWithConfirmation(*) {
+    current := HistoryCurrent(audioHistory)
+    if (!current || !FileExist(current.file)) {
+        statusText.Value := "No audio file to play!"
+        return
+    }
+    
+    ; Show confirmation dialog with the text
+    confirmGui := Gui("+AlwaysOnTop")
+    confirmGui.Title := "Confirm Audio Playback"
+    confirmGui.BackColor := "0x2D2D2D"
+    
+    ; Add text display
+    confirmGui.SetFont("s10 cWhite")
+    confirmGui.Add("Text", "x10 y10 w380", "The following text will be played:")
+    textDisplay := confirmGui.Add("Edit", "x10 y+5 w380 h100 ReadOnly -E0x200", current.text)
+    textDisplay.Opt("+Background0x3D3D3D cWhite")
+    
+    ; Add instructions
+    confirmGui.Add("Text", "x10 y+10 w380", "Press Y to play, N to cancel")
+    
+    ; Store file path and create handler
+    confirmGui.audioFile := current.file
+    
+    PlayAudio(*) {
+        SoundPlay(confirmGui.audioFile)
+        UpdateLastPlayed(confirmGui.audioFile)
+        confirmGui.Destroy()
+    }
+    
+    ; Add hotkeys
+    HotIfWinActive("ahk_id " confirmGui.Hwnd)
+    Hotkey("y", PlayAudio)
+    Hotkey("n", (*) => confirmGui.Destroy())
+    HotIfWinActive()
+    
+    ; Show dialog
+    confirmGui.Show("w400")
+}
+
 ; ========== Hotkeys ==========
 ; Enter to play current audio
-Enter::PlayCurrentAudio()
+Enter::PlayAudioWithConfirmation()
 
 ; ESC to exit
 Esc::ExitApp()
