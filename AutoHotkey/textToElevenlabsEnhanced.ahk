@@ -391,6 +391,10 @@ ProcessTTS(*) {
     AddDebug("Starting ProcessTTS")
     text := A_Clipboard  ; Get text from clipboard
     AddDebug("Clipboard text length: " StrLen(text))
+    
+    ; Clear the cache directory first
+    Loop Files, cacheDir "\*.*"
+        FileDelete(A_LoopFileFullPath)
     if (StrLen(Trim(text)) = 0) {
         statusText.Value := "Error: Clipboard is empty!"
         return
@@ -744,12 +748,24 @@ OpenCache(*) {
 }
 
 CopyAudioFile(*) {
-    if !(lastAudioFile && FileExist(lastAudioFile)) {
+    current := HistoryCurrent(audioHistory)
+    if (!current || !FileExist(current.file)) {
         statusText.Value := "No audio file to copy!"
         return
     }
-    A_Clipboard := lastAudioFile
-    statusText.Value := "Audio file path copied to clipboard"
+    
+    ; Clear clipboard first
+    A_Clipboard := ""
+    
+    ; Create a FileOperation object
+    psh := ComObject("Shell.Application")
+    SplitPath(current.file, &name, &dir)
+    ns := psh.NameSpace(dir)
+    item := ns.ParseName(name)
+    
+    ; Copy the file to clipboard
+    item.InvokeVerb("Copy")
+    statusText.Value := "Audio file copied to clipboard"
 }
 
 MoveAudioRight(*) {
@@ -786,13 +802,17 @@ Esc::ExitApp()
 
 ; Up/Down arrows for history navigation
 Up::{
-    if (HistoryPrevious(audioHistory)) {
+    if (current := HistoryPrevious(audioHistory)) {
+        lastAudioFile := current.file
+        UpdateCache(current.file)
         UpdateHistoryDisplay()
     }
 }
 
 Down::{
-    if (HistoryNext(audioHistory)) {
+    if (current := HistoryNext(audioHistory)) {
+        lastAudioFile := current.file
+        UpdateCache(current.file)
         UpdateHistoryDisplay()
     }
 }
