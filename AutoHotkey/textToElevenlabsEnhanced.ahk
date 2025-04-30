@@ -774,6 +774,10 @@ PlayAudioWithConfirmation(*) {
         return
     }
     
+    ; Destroy any existing confirmation dialogs
+    for window in WinGetList("Confirm Audio Playback")
+        WinClose("ahk_id " window)
+    
     ; Show confirmation dialog with the text
     confirmGui := Gui("+AlwaysOnTop")
     confirmGui.Title := "Confirm Audio Playback"
