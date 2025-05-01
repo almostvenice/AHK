@@ -768,11 +768,14 @@ CopyAudioFile(*) {
 
 
 PlayAudioWithConfirmation(*) {
+    AddDebug("Attempting to play current audio")
     current := HistoryCurrent(audioHistory)
     if (!current || !FileExist(current.file)) {
+        AddDebug("No valid audio file found to play")
         statusText.Value := "No audio file to play!"
         return
     }
+    AddDebug("Found valid audio file: " current.file)
     
     ; Destroy any existing confirmation dialogs
     for window in WinGetList("Confirm Audio Playback")
@@ -796,9 +799,12 @@ PlayAudioWithConfirmation(*) {
     confirmGui.audioFile := current.file
     
     PlayAudio(*) {
+        AddDebug("Playing audio file: " confirmGui.audioFile)
         SoundPlay(confirmGui.audioFile)
+        AddDebug("Updating last played timestamp")
         UpdateLastPlayed(confirmGui.audioFile)
         confirmGui.Destroy()
+        AddDebug("Audio playback completed")
     }
     
     ; Add hotkeys
@@ -826,18 +832,26 @@ Esc::ExitApp()
 
 ; Up/Down arrows for history navigation
 Up::{
+    AddDebug("Navigating to previous history item")
     if (current := HistoryPrevious(audioHistory)) {
+        AddDebug("Previous item found: " current.text)
         lastAudioFile := current.file
         UpdateCache(current.file)
         UpdateHistoryDisplay()
+    } else {
+        AddDebug("No previous history item available")
     }
 }
 
 Down::{
+    AddDebug("Navigating to next history item")
     if (current := HistoryNext(audioHistory)) {
+        AddDebug("Next item found: " current.text)
         lastAudioFile := current.file
         UpdateCache(current.file)
         UpdateHistoryDisplay()
+    } else {
+        AddDebug("No next history item available")
     }
 }
 
