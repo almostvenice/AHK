@@ -362,7 +362,7 @@ currentText.Opt("+Background0x3D3D3D cWhite")
 
 ; History list
 mainGui.Add("Text", "x10 y+10 w380", "History:").SetFont("cWhite")
-historyList := mainGui.Add("ListBox", "x10 y+5 w380 h200", [])
+historyList := mainGui.Add("ListBox", "x10 y+5 w380 h100", [])
 historyList.SetFont("s10")
 historyList.Opt("+Background0x3D3D3D cWhite")
 historyList.OnEvent("DoubleClick", PlaySelectedHistory)
@@ -388,8 +388,9 @@ CreateStyledButton("Open Cache (Alt+Space)", "x+10", OpenCache)
 CreateStyledButton("Copy File (Alt+C)", "x+10", CopyAudioFile)
 CreateStyledButton("Recent", "x+10", ShowRecentlyPlayed)
 
-; Show the window
-mainGui.Show("w400")
+; Position main window in top right
+MonitorGetWorkArea(, &monitorLeft, &monitorTop, &monitorRight)
+mainGui.Show(Format("x{} y10 w400 h300", monitorRight - 900))
 
 ; ========== Main Functions ==========
 ; Process text-to-speech request
