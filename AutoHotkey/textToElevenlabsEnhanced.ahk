@@ -26,6 +26,18 @@ if (apiKey = "" || voiceID = "") {
     ExitApp
 }
 
+; Auto-continue for file access errors
+SetTimer AutoContinueErrors, 100
+
+AutoContinueErrors() {
+    if WinExist("textToElevenlabsEnhanced.ahk") {
+        if WinGetText() ~= "Error: \(32\) The process cannot access the file" {
+            ControlClick "Continue"
+            AddDebug("Auto-continued file access error")
+        }
+    }
+}
+
 ; ========== Global Variables ==========
 ; History tracking (circular buffer of 5 items)
 InitAudioHistory() {
