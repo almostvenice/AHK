@@ -361,32 +361,32 @@ currentText.Opt("+Background0x3D3D3D cWhite")
 }
 
 ; History list
-mainGui.Add("Text", "x10 y+10 w380", "History:").SetFont("cWhite")
-historyList := mainGui.Add("ListBox", "x10 y+5 w380 h100", [])
+mainGui.Add("Text", "x10 y+10 w480", "History:").SetFont("cWhite")
+historyList := mainGui.Add("ListBox", "x10 y+5 w480 h100", [])
 historyList.SetFont("s10")
 historyList.Opt("+Background0x3D3D3D cWhite")
 historyList.OnEvent("DoubleClick", PlaySelectedHistory)
 
 ; Response area
-mainGui.Add("Text", "x10 y+10 w380", "API Response:").SetFont("cWhite")
-responseText := mainGui.Add("Edit", "x10 y+5 w380 h60 ReadOnly -E0x200", "")
+mainGui.Add("Text", "x10 y+10 w480", "API Response:").SetFont("cWhite")
+responseText := mainGui.Add("Edit", "x10 y+5 w480 h60 ReadOnly -E0x200", "")
 responseText.SetFont("s10")
 responseText.Opt("+Background0x3D3D3D cWhite")
 
 ; Button row
-btnY := "y+10"
 CreateStyledButton(text, x, handler) {
-    btn := mainGui.Add("Button", x " " btnY " w90 h30", text)
+    btn := mainGui.Add("Button", x " y240 w115 h25", text)
     btn.OnEvent("Click", handler)
     btn.Opt("+Background0x4D4D4D")
-    btn.SetFont("cWhite")
+    btn.SetFont("s9 cWhite")
     return btn
 }
 
+; Create buttons in a horizontal row
 CreateStyledButton("Play (Enter)", "x10", PlayCurrentAudio)
-CreateStyledButton("Open Cache (Alt+Space)", "x+10", OpenCache)
-CreateStyledButton("Copy File (Alt+C)", "x+10", CopyAudioFile)
-CreateStyledButton("Recent", "x+10", ShowRecentlyPlayed)
+CreateStyledButton("Open Cache", "x105", OpenCache)
+CreateStyledButton("Copy File", "x200", CopyAudioFile)
+CreateStyledButton("Recent", "x295", ShowRecentlyPlayed)
 
 ; Position main window in top right
 MonitorGetWorkArea(, &monitorLeft, &monitorTop, &monitorRight)
