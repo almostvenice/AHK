@@ -172,8 +172,6 @@ for dir in [audioDir, cacheDir]
     if !DirExist(dir)
         DirCreate(dir)
 
-
-
 ; ========== Utility Functions ==========
 ; Normalize text for consistent comparison
 NormalizeText(text) {
@@ -312,8 +310,6 @@ FindSequenceAudio(sequenceId, direction) {
     
     return direction = "next" ? nextFile : previousFile
 }
-
-
 
 ; Function to add debug message
 AddDebug(msg) {
@@ -765,7 +761,6 @@ CopyAudioFile(*) {
     item.InvokeVerb("Copy")
     statusText.Value := "Audio file copied to clipboard"
 }
-
 
 PlayAudioWithConfirmation(*) {
     AddDebug("Attempting to play current audio")
