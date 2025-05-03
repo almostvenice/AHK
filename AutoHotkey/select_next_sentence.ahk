@@ -90,6 +90,6 @@ catch {
 }
 
 ; Run the text-to-speech script
-Run A_ScriptDir "\textToElevenlabs.ahk"
+Run A_ScriptDir "\textToElevenlabsEnhanced.ahk"
 
 ; No need to restore original clipboard since we want to keep the selection
