@@ -330,13 +330,13 @@ AddDebug(msg) {
 }
 
 ; Status area
-statusText := mainGui.Add("Text", "x10 y10 w380", "Ready")
+statusText := mainGui.Add("Text", "x10 y10 w380 h20", "Ready")
 statusText.SetFont("s10 cWhite")
 statusText.Opt("+Background" . mainGui.BackColor)
 
 ; Current text display
-mainGui.Add("Text", "x10 y+10 w380", "Current Text:").SetFont("cWhite")
-currentText := mainGui.Add("Edit", "x10 y+10 w380 h60 vCurrentText", "")
+mainGui.Add("Text", "x10 y+10 w360", "Current Text:").SetFont("cWhite")
+currentText := mainGui.Add("Edit", "x10 y+10 w360 h60 vCurrentText", "")
 currentText.SetFont("s10")
 currentText.Opt("+Background0x3D3D3D cWhite")
 
@@ -362,20 +362,20 @@ currentText.Opt("+Background0x3D3D3D cWhite")
 
 ; History list
 mainGui.Add("Text", "x10 y+10 w480", "History:").SetFont("cWhite")
-historyList := mainGui.Add("ListBox", "x10 y+5 w480 h100", [])
+historyList := mainGui.Add("ListBox", "x10 y+5 w360 h100", [])
 historyList.SetFont("s10")
 historyList.Opt("+Background0x3D3D3D cWhite")
 historyList.OnEvent("DoubleClick", PlaySelectedHistory)
 
 ; Response area
 mainGui.Add("Text", "x10 y+10 w480", "API Response:").SetFont("cWhite")
-responseText := mainGui.Add("Edit", "x10 y+5 w480 h60 ReadOnly -E0x200", "")
+responseText := mainGui.Add("Edit", "x10 y+50 w360 h80 ReadOnly -E0x200", "")
 responseText.SetFont("s10")
 responseText.Opt("+Background0x3D3D3D cWhite")
 
 ; Button row
 CreateStyledButton(text, x, handler) {
-    btn := mainGui.Add("Button", x " y240 w115 h25", text)
+    btn := mainGui.Add("Button", x " y240 w115 h35", text)
     btn.OnEvent("Click", handler)
     btn.Opt("+Background0x4D4D4D")
     btn.SetFont("s9 cWhite")
@@ -384,13 +384,13 @@ CreateStyledButton(text, x, handler) {
 
 ; Create buttons in a horizontal row
 CreateStyledButton("Play (Enter)", "x10", PlayCurrentAudio)
-CreateStyledButton("Open Cache", "x105", OpenCache)
-CreateStyledButton("Copy File", "x200", CopyAudioFile)
-CreateStyledButton("Recent", "x295", ShowRecentlyPlayed)
+CreateStyledButton("Open Cache (ALT + SPACE)", "x130", OpenCache)
+CreateStyledButton("Copy File (ALT + C)", "x255", CopyAudioFile)
+; CreateStyledButton("Recent", "x295", ShowRecentlyPlayed)
 
 ; Position main window in top right
 MonitorGetWorkArea(, &monitorLeft, &monitorTop, &monitorRight)
-mainGui.Show(Format("x{} y10 w400 h300", monitorRight - 900))
+mainGui.Show(Format("x{} y10 w400 h100", monitorRight - 900))
 
 ; ========== Main Functions ==========
 ; Process text-to-speech request
@@ -418,7 +418,7 @@ ProcessTTS(*) {
     ; Check for existing audio
     existing := FindExistingAudio(text)
     if (existing["file"]) {
-        statusText.Value := "Found existing audio. Press Enter to play."
+        statusText.Value := "Found existing audio. Press Enter to play. Alt + E to edit."
         lastAudioFile := existing["file"]
         currentSequenceId := existing["sequenceId"]
         AddDebug("Updating cache with file: " lastAudioFile)
@@ -863,20 +863,20 @@ Down::{
     }
 }
 
-; Left/Right arrows for sequence navigation
-Left::{
-    if (prevFile := FindSequenceAudio(currentSequenceId, "prev")) {
-        lastAudioFile := prevFile
-        PlayCurrentAudio()
-    }
-}
+; ; Left/Right arrows for sequence navigation
+; Left::{
+;     if (prevFile := FindSequenceAudio(currentSequenceId, "prev")) {
+;         lastAudioFile := prevFile
+;         PlayCurrentAudio()
+;     }
+; }
 
-Right::{
-    if (nextFile := FindSequenceAudio(currentSequenceId, "next")) {
-        lastAudioFile := nextFile
-        PlayCurrentAudio()
-    }
-}
+; Right::{
+;     if (nextFile := FindSequenceAudio(currentSequenceId, "next")) {
+;         lastAudioFile := nextFile
+;         PlayCurrentAudio()
+;     }
+; }
 
 ; Initialize history system
 ProcessTTS()
