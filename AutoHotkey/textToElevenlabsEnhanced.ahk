@@ -1,6 +1,15 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
+; Ctrl+R to reload script
+^r::{
+    Reload
+    Sleep 1000 ; If successful, the reload will close this instance during the Sleep
+    MsgBox "The script could not be reloaded. Would you like to open it for editing?"
+    if (MsgBox("The script could not be reloaded. Would you like to open it for editing?",, 4) = "Yes")
+        Run "notepad " A_ScriptFullPath
+}
+
 ; ========== Configuration and Setup ==========
 ; Read environment variables from .env file
 envFile := A_ScriptDir "\..\\.env"
@@ -378,8 +387,11 @@ responseText.SetFont("s10")
 responseText.Opt("+Background0x3D3D3D cWhite")
 
 ; Button row
-CreateStyledButton(text, x, handler) {
-    btn := mainGui.Add("Button", x " y240 w115 h35", text)
+CreateStyledButton(text, x, handler, options := "") {
+    y := "y240"
+    if (options)
+        y := options
+    btn := mainGui.Add("Button", x " " y " w115 h35", text)
     btn.OnEvent("Click", handler)
     btn.Opt("+Background0x4D4D4D")
     btn.SetFont("s9 cWhite")
@@ -390,7 +402,7 @@ CreateStyledButton(text, x, handler) {
 CreateStyledButton("Play (Enter)", "x10", PlayCurrentAudio)
 CreateStyledButton("Open Cache (ALT + SPACE)", "x130", OpenCache)
 CreateStyledButton("Copy File (ALT + C)", "x255", CopyAudioFile)
-CreateStyledButton("Toggle Debug (ALT + B)", "x380", ToggleDebug)
+CreateStyledButton("Debug (ALT + B)", "x130", ToggleDebug, "y425")
 ; CreateStyledButton("Recent", "x295", ShowRecentlyPlayed)
 
 ; Position main window in top right
