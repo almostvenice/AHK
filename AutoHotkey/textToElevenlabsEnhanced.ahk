@@ -39,6 +39,13 @@ AutoContinueErrors() {
 }
 
 ; ========== Global Variables ==========
+; Debug window - hidden by default, toggle with Alt+B
+debugGui := Gui("+AlwaysOnTop")
+debugGui.Title := "Debug Output"
+debugGui.BackColor := "0x2D2D2D"
+debugGui.SetFont("s10 cWhite")
+debugGui.Add("Edit", "x10 y10 w500 h400 ReadOnly -E0x200 vDebugOutput +Background0x3D3D3D cWhite")
+
 ; History tracking (circular buffer of 5 items)
 InitAudioHistory() {
     history := {}
@@ -149,19 +156,6 @@ HistoryCurrent(history) {
 global mainGui := Gui("+Resize +MinSize400x500")
 mainGui.Title := "Enhanced Text-to-Speech"
 mainGui.BackColor := "0x2D2D2D"  ; Dark theme
-
-; Create debug window
-global debugGui := Gui("+AlwaysOnTop +Resize")
-debugGui.Title := "Debug Information"
-debugGui.BackColor := "0x2D2D2D"
-
-; Add debug log
-global debugLog := debugGui.Add("Edit", "x10 y10 w600 h400 ReadOnly -E0x200", "")
-debugLog.SetFont("s10 cWhite")
-debugLog.Opt("+Background0x3D3D3D")
-
-; Show debug window
-debugGui.Show("w620 h420")
 
 ; Initialize global variables
 global lastAudioFile := ""
@@ -325,8 +319,18 @@ FindSequenceAudio(sequenceId, direction) {
 
 ; Function to add debug message
 AddDebug(msg) {
-    global debugLog
-    debugLog.Value := FormatTime(, "[HH:mm:ss] ") msg "`n" debugLog.Value
+    global debugGui
+    debugOutput := debugGui["DebugOutput"]
+    debugOutput.Value := FormatTime(, "[HH:mm:ss] ") msg "`n" debugOutput.Value
+}
+
+; Toggle debug window function
+ToggleDebug(*) {
+    global debugGui
+    if WinExist("ahk_id " debugGui.Hwnd)
+        debugGui.Hide()
+    else
+        debugGui.Show("w520 h420")
 }
 
 ; Status area
@@ -386,6 +390,7 @@ CreateStyledButton(text, x, handler) {
 CreateStyledButton("Play (Enter)", "x10", PlayCurrentAudio)
 CreateStyledButton("Open Cache (ALT + SPACE)", "x130", OpenCache)
 CreateStyledButton("Copy File (ALT + C)", "x255", CopyAudioFile)
+CreateStyledButton("Toggle Debug (ALT + B)", "x380", ToggleDebug)
 ; CreateStyledButton("Recent", "x295", ShowRecentlyPlayed)
 
 ; Position main window in top right
@@ -837,6 +842,9 @@ Esc::ExitApp()
 
 ; Alt + C to copy file
 !c::CopyAudioFile()
+
+; Alt + B to toggle debug window
+!b::ToggleDebug()
 
 ; Up/Down arrows for history navigation
 Up::{
