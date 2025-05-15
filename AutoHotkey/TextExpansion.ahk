@@ -63,6 +63,19 @@ EnsurePhraseExpanderRunning() {
     }
 }
 
+; Set up timer to run at 6 AM daily
+SetTimer(CheckTime, 59000)  ; Check every 59 seconds
+
+CheckTime() {
+    if (FormatTime(A_Now, 'HH:mm') = '06:00') {
+        try {
+            Run(A_ScriptDir "\update_all.ahk")
+        } catch Error as e {
+            MsgBox('Error running update_all: ' e.Message)
+        }
+    }
+}
+
 ; Convert xss to Ctrl + Alt + Shift + Space
 :*:xss::
 {
