@@ -64,7 +64,7 @@ EnsurePhraseExpanderRunning() {
 }
 
 ; Set up timer to run at 6 AM daily
-SetTimer(CheckTime, 59000)  ; Check every 59 seconds
+SetTimer(CheckTime, 59000)  ; Check every 59 seconds to see if it's 6 AM //! This is to prevent the script from running multiple times
 
 CheckTime() {
     if (FormatTime(A_Now, 'HH:mm') = '06:00') {
