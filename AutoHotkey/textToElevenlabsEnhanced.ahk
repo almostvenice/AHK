@@ -162,7 +162,7 @@ HistoryCurrent(history) {
 
 ; ========== GUI Creation ==========
 ; Create main GUI window
-global mainGui := Gui("+Resize +MinSize400x500")
+global mainGui := Gui("+Resize +MinSize100x220")
 mainGui.Title := "Enhanced Text-to-Speech"
 mainGui.BackColor := "0x2D2D2D"  ; Dark theme
 
@@ -348,47 +348,47 @@ statusText.SetFont("s10 cWhite")
 statusText.Opt("+Background" . mainGui.BackColor)
 
 ; Current text display
-mainGui.Add("Text", "x10 y+10 w360", "Current Text:").SetFont("cWhite")
-currentText := mainGui.Add("Edit", "x10 y+10 w360 h60 vCurrentText", "")
-currentText.SetFont("s10")
-currentText.Opt("+Background0x3D3D3D cWhite")
+; mainGui.Add("Text", "x10 y+10 w360", "Current Text:").SetFont("cWhite")
+; currentText := mainGui.Add("Edit", "x10 y+10 w360 h60 vCurrentText", "")
+; currentText.SetFont("s10")
+; currentText.Opt("+Background0x3D3D3D cWhite")
 
 ; Add hotkeys
-!e::
-{
-    global currentText
-    currentText.Focus()
-    statusText.Value := "Ready to edit. Press Alt+S to send to ElevenLabs."
-}
+; !e::
+; {
+;     global currentText
+;     currentText.Focus()
+;     statusText.Value := "Ready to edit. Press Alt+S to send to ElevenLabs."
+; }
 
-!s::
-{
-    global currentText
-    text := currentText.Value
-    if (StrLen(Trim(text)) = 0) {
-        statusText.Value := "Error: No text to send!"
-        return
-    }
-    A_Clipboard := text  ; Set clipboard to current text
-    ProcessTTS()  ; Process the text
-}
+; !s::
+; {
+;     global currentText
+;     text := currentText.Value
+;     if (StrLen(Trim(text)) = 0) {
+;         statusText.Value := "Error: No text to send!"
+;         return
+;     }
+;     A_Clipboard := text  ; Set clipboard to current text
+;     ProcessTTS()  ; Process the text
+; }
 
 ; History list
-mainGui.Add("Text", "x10 y+10 w480", "History:").SetFont("cWhite")
-historyList := mainGui.Add("ListBox", "x10 y+5 w360 h100", [])
+mainGui.Add("Text", "x10 y+0 w480", "").SetFont("cWhite")
+historyList := mainGui.Add("ListBox", "x10 y+0 w360 h100", [])
 historyList.SetFont("s10")
 historyList.Opt("+Background0x3D3D3D cWhite")
 historyList.OnEvent("DoubleClick", PlaySelectedHistory)
 
 ; Response area
-mainGui.Add("Text", "x10 y+10 w480", "API Response:").SetFont("cWhite")
-responseText := mainGui.Add("Edit", "x10 y+50 w360 h80 ReadOnly -E0x200", "")
-responseText.SetFont("s10")
-responseText.Opt("+Background0x3D3D3D cWhite")
+; mainGui.Add("Text", "x10 y+10 w480", "API Response:").SetFont("cWhite")
+; responseText := mainGui.Add("Edit", "x10 y+50 w360 h80 ReadOnly -E0x200", "")
+; responseText.SetFont("s10")
+; responseText.Opt("+Background0x3D3D3D cWhite")
 
 ; Button row
 CreateStyledButton(text, x, handler, options := "") {
-    y := "y240"
+    y := "y125"
     if (options)
         y := options
     btn := mainGui.Add("Button", x " " y " w115 h35", text)
@@ -402,7 +402,7 @@ CreateStyledButton(text, x, handler, options := "") {
 CreateStyledButton("Play (Enter)", "x10", PlayCurrentAudio)
 CreateStyledButton("Open Cache (ALT + SPACE)", "x130", OpenCache)
 CreateStyledButton("Copy File (ALT + C)", "x255", CopyAudioFile)
-CreateStyledButton("Debug (ALT + B)", "x130", ToggleDebug, "y425")
+CreateStyledButton("Debug (ALT + B)", "x130", ToggleDebug, "y175")
 ; CreateStyledButton("Recent", "x295", ShowRecentlyPlayed)
 
 ; Position main window in top right
@@ -418,8 +418,16 @@ ProcessTTS(*) {
     AddDebug("Clipboard text length: " StrLen(text))
     
     ; Clear the cache directory first
-    Loop Files, cacheDir "\*.*"
-        FileDelete(A_LoopFileFullPath)
+    Loop Files, cacheDir "\*.*" {
+        try {
+            FileDelete(A_LoopFileFullPath)
+            Sleep 10  ; Small delay between deletions
+        } catch Error as e {
+            ; Skip files that can't be deleted
+            AddDebug("Failed to delete cache file: " A_LoopFileFullPath " - " e.Message)
+            continue
+        }
+    }
     if (StrLen(Trim(text)) = 0) {
         statusText.Value := "Error: Clipboard is empty!"
         return
@@ -435,7 +443,7 @@ ProcessTTS(*) {
     ; Check for existing audio
     existing := FindExistingAudio(text)
     if (existing["file"]) {
-        statusText.Value := "Found existing audio. Press Enter to play. Alt + E to edit."
+        statusText.Value := "Found existing audio. Up/Down to navigate history."
         lastAudioFile := existing["file"]
         currentSequenceId := existing["sequenceId"]
         AddDebug("Updating cache with file: " lastAudioFile)
@@ -456,7 +464,7 @@ ProcessTTS(*) {
     jsonText := StrReplace(jsonText, "`t", "\t")
     
     jsonData := "{`"text`":`"" jsonText "`"}"
-    responseText.Value := "URL: " url "`nData: " jsonData
+    ; responseText.Value := "URL: " url "`nData: " jsonData
     
     ; Call ElevenLabs API
     tempFile := audioDir "\tts_" timestamp ".mp3"
@@ -470,7 +478,7 @@ ProcessTTS(*) {
         
         if (http.Status != 200) {
             statusText.Value := "Error: API request failed!"
-            responseText.Value := "Status: " http.Status "`nResponse: " http.ResponseText
+            ; responseText.Value := "Status: " http.Status "`nResponse: " http.ResponseText
             return
         }
         
@@ -508,7 +516,7 @@ ProcessTTS(*) {
         
     } catch as err {
         statusText.Value := "Error: " err.Message
-        responseText.Value := "Exception details:`n" err.Message
+        ; responseText.Value := "Exception details:`n" err.Message
     }
 }
 
@@ -521,11 +529,11 @@ PlayCurrentAudio(*) {
     if (current) {
         audioFile := current.file
         AddDebug("Playing from history: " current.text)
-        currentText.Value := current.text
+        ; currentText.Value := current.text
     } else {
         audioFile := lastAudioFile
         AddDebug("Playing last audio file")
-        currentText.Value := "No text available"
+        ; currentText.Value := "No text available"
     }
     
     if (audioFile = "") {
@@ -567,7 +575,7 @@ UpdateHistoryDisplay() {
     current := HistoryCurrent(audioHistory)
     if (current) {
         AddDebug("Updating history display. Items: " audioHistory.items.Length)
-        currentText.Value := current.text
+        ; currentText.Value := current.text
         
         ; Update history list
         historyItems := []
@@ -582,7 +590,7 @@ UpdateHistoryDisplay() {
             historyList.Choose(audioHistory.currentIndex)
         }
     } else {
-        currentText.Value := "No text available"
+        ; currentText.Value := "No text available"
         historyList.Delete()
     }
     AddDebug("History display updated successfully")

@@ -1,11 +1,17 @@
 #Requires AutoHotkey v2.0
 
+if !A_IsAdmin {
+    try Run '*RunAs "' A_ScriptFullPath '"'
+    ExitApp
+}
+
+
 ; Check if Chrome is running
 if ProcessExist("chrome.exe") {
     ; Close Chrome
     ProcessClose("chrome.exe")
     ; Wait a moment for Chrome to fully close
-    Sleep(2000)
+    Sleep(3000)
 }
 
 ; Start Chrome
