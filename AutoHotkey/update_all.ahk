@@ -1,5 +1,10 @@
 #Requires AutoHotkey v2.0
 
+if !A_IsAdmin {
+    try Run '*RunAs "' A_ScriptFullPath '"'
+    ExitApp
+}
+
 ; Define paths dynamically
 repoPath := A_ScriptDir "\.."  ; Go up one directory from the script location
 gitPath := GetGitPath()  ; Get Git executable dynamically
