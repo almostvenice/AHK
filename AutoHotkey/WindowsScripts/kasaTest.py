@@ -2,7 +2,8 @@ import asyncio
 from kasa.iot import IotPlug
 
 async def main():
-    plug = await IotPlug.connect("192.168.5.132")
+    plug = IotPlug("192.168.5.132")
+    await plug.connect(host="192.168.5.132")
     await plug.update()  # Fetch current state
     print(f"Current state: {plug.is_on}")
     # await plug.turn_on()  # Turn on the plug
