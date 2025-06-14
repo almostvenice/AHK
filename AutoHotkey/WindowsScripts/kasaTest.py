@@ -5,10 +5,16 @@ async def main():
     plug = IotPlug("192.168.5.132")
     await plug.connect(host="192.168.5.132")
     await plug.update()  # Fetch current state
-    print(f"Current state: {plug.is_on}")
-    # await plug.turn_on()  # Turn on the plug
-    # await plug.update()
-    # print(f"New state: {plug.is_on}")
+    print(f"Initial state: {plug.is_on}")
+    print("Turning off...")
+    await plug.turn_off()
+    await asyncio.sleep(3)  # Wait 3 seconds
+    await plug.update()
+    print(f"New state: {plug.is_on}")
+    print("Turning back on...")
+    await plug.turn_on()
+    await plug.update()
+    print(f"Final state: {plug.is_on}")
 
 if __name__ == "__main__":
     asyncio.run(main())
