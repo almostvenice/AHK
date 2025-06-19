@@ -47,12 +47,36 @@ LaunchGoogleDocsNewTab(docId := "") {
     ; Wait for the window to appear with the document title
     SetTitleMatchMode(2)  ; Partial match
     if WinWait("Google Docs ahk_exe chrome.exe", , 10) {  ; Wait up to 10 seconds
-        Sleep(1000)  ; Give Chrome time to fully initialize
-        WinActivate("ahk_class Chrome_WidgetWin_1 ahk_exe chrome.exe")
+        Sleep(2000)  ; Give Chrome more time to fully initialize
         
-        ; Create new tab using keyboard shortcut
-        Sleep(500)  ; Give window time to be ready
-        Send("+{F11}")  ; Shift+F11 for new tab
+        ; Try multiple times to activate and send shortcut
+        maxAttempts := 5
+        success := false
+        
+        Loop maxAttempts {
+            try {
+                ; Try to activate the window
+                WinActivate("ahk_exe chrome.exe")
+                Sleep(1000)  ; Longer wait between activation and sending keys
+                
+                ; Make sure window is active before sending keys
+                if WinActive("ahk_exe chrome.exe") {
+                    ; Send the shortcut once
+                    Send("+{F11}")
+                    Sleep(500)  ; Wait to see if it worked
+                    success := true
+                    break
+                }
+            } catch as err {
+                ; If this attempt failed, wait and try again
+                Sleep(500)
+                continue
+            }
+        }
+        
+        if !success {
+            MsgBox("Failed to create new tab after " maxAttempts " attempts", "Error", 16)
+        }
     }
 }
 
