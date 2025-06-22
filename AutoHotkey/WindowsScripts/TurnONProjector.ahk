@@ -1,12 +1,11 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
-; Initialize sound system with a silent beep
-SoundBeep(60, 1)
-Sleep(100)
-
-; Longer delay to ensure system is ready
-Sleep(3000)
+; Play silent audio to keep Bluetooth active
+Loop 5 {
+    SoundBeep(20, 50)  ; Very low frequency, barely audible
+    Sleep(50)
+}
 
 ; Play turnON audio and wait for completion
 SoundPlay("TurnONProjector.mp3", 1)  ; 1 = wait for completion
