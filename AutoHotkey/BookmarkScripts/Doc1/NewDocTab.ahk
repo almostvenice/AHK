@@ -8,21 +8,37 @@ docId := "1NyhqufOJqxWjPV-d_IUHMUgqPR0WKcoEXAh4lTrvkXA"  ; Document ID
 CloseDocsWindows() {
     ; Get all Chrome windows
     SetTitleMatchMode(2)  ; Partial match
-    windowList := WinGetList("ahk_exe chrome.exe")
     
-    ; Check each window
-    for hwnd in windowList {
-        ; Get window info
-        title := WinGetTitle("ahk_id " hwnd)
-        windowStyle := WinGetStyle("ahk_id " hwnd)
+    ; Try multiple times to ensure all PWA windows are closed
+    maxAttempts := 3
+    Loop maxAttempts {
+        ; First try normal window closing
+        windowList := WinGetList("ahk_exe chrome.exe")
+        windowsClosed := false
         
-        ; Only close Google Docs PWA windows
-        if (windowStyle & 0x800000) && InStr(title, "Google Docs") {
-            WinClose("ahk_id " hwnd)
-            Sleep(100)  ; Give it a moment to close
+        for hwnd in windowList {
+            title := WinGetTitle("ahk_id " hwnd)
+            if InStr(title, "Google Docs") && !InStr(title, " - Google Chrome") {
+                WinClose("ahk_id " hwnd)
+                windowsClosed := true
+            }
         }
+        
+        ; Then forcefully kill any remaining PWA processes
+        RunWait("powershell.exe -NoProfile -Command `"Get-CimInstance Win32_Process | Where-Object {$_.CommandLine -like '*--app=https://docs.google.com*'} | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }`"",, "Hide")
+        
+        ; Check if any Google Docs windows still exist
+        if !WinExist("Google Docs ahk_exe chrome.exe") {
+            break  ; All windows closed successfully
+        }
+        
+        Sleep(1000)  ; Wait before next attempt
     }
+    
+    ; Final sleep to ensure everything is closed
+    Sleep(1000)
 }
+
 
 ; Function to launch Google Docs and create new tab
 LaunchGoogleDocsNewTab(docId := "") {

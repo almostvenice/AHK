@@ -12,7 +12,7 @@
 
 ; ========== Configuration and Setup ==========
 ; Read environment variables from .env file
-envFile := A_ScriptDir "\..\\.env"
+envFile := A_ScriptDir "\..\..\.env"
 apiKey := ""
 voiceID := ""
 
@@ -846,8 +846,12 @@ PlayAudioWithConfirmation(*) {
     Hotkey("n", (*) => confirmGui.Destroy())
     HotIfWinActive()
     
-    ; Show dialog
-    confirmGui.Show("w400")
+    ; Show dialog and position it to the left of the main GUI
+    WinGetPos(&mainX, &mainY, &mainW, &mainH, "Enhanced Text-to-Speech")
+    if (mainY)
+        confirmGui.Show(Format("w400 x{} y{}", mainX - 850, mainY))
+    else
+        confirmGui.Show("w400")
 }
 
 ; ========== Hotkeys ==========

@@ -1,3 +1,5 @@
 .env
 /AutoHotkey/audio
 /AutoHotkey/elevenlabsRecordings.csv
+AutoHotkey/ElevenLabs/elevenlabsRecordings.csv
+/AutoHotkey/ElevenLabs/audio
