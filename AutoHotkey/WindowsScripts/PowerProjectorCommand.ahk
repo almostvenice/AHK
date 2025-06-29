@@ -8,7 +8,7 @@ Loop 3 {
 }
 Sleep(1000)  ; Full second to ensure connection is stable
 
-; Play turnON audio and wait for completion
-SoundPlay("TurnONProjector.mp3", 1)  ; 1 = wait for completion
+; Play turnOFF audio and wait for completion
+SoundPlay("PowerProjector.mp3", 1)  ; 1 = wait for completion
 
 ExitApp  ; Explicitly exit the script when done
