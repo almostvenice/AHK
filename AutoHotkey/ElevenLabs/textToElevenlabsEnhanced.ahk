@@ -190,6 +190,10 @@ for dir in [audioDir, cacheDir]
 ; ========== Utility Functions ==========
 ; Normalize text for consistent comparison
 NormalizeText(text) {
+    ; Remove leading period if it's the first character
+    if (SubStr(text, 1, 1) == ".") {
+        text := SubStr(text, 2)
+    }
     text := Trim(text, " `t`r`n")
     text := StrReplace(text, "`r`n", "`n")
     text := StrReplace(text, "`r", "`n")
@@ -860,6 +864,18 @@ Enter::PlayAudioWithConfirmation()
 
 ; ESC to exit
 Esc::ExitApp()
+
+; Alt + SHIFT + CTRL + o to continue previous sentence
+!+^o::Run "continue_prev_sentence.ahk"
+
+; Alt + SHIFT + CTRL + x to continue next sentence
+!+^x::Run "continue_next_sentence.ahk"
+
+; Alt + SHIFT + CTRL + P to continue previous paragraph
+!+^p::Run "continue_prev_paragraph.ahk"
+
+; Alt + SHIFT + CTRL + S to continue next paragraph
+!+^s::Run "continue_next_paragraph.ahk"
 
 ; Alt + Space to open cache
 !space::OpenCache()
