@@ -162,7 +162,7 @@ HistoryCurrent(history) {
 
 ; ========== GUI Creation ==========
 ; Create main GUI window
-global mainGui := Gui("+Resize +MinSize100x220")
+global mainGui := Gui("+Resize +MinSize80x165")
 mainGui.Title := "Enhanced Text-to-Speech"
 mainGui.BackColor := "0x2D2D2D"  ; Dark theme
 
