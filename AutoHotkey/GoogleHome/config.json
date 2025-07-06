@@ -1,0 +1,12 @@
+{
+    "hass_url": "http://192.168.4.219:8123",
+    "devices": {
+        "Family Room TV": "Family Room tv",
+        "Living Room TV": "Living Room tv"
+    },
+    "commands": {
+        "youtube_tv": "play Youtube TV on {device}",
+        "netflix": "play {title} from Netflix on {device}",
+        "nbc": "play nbc from Youtube TV on {device}"
+    }
+}
