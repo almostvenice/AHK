@@ -17,13 +17,27 @@ $body = @{
     command = $broadcastCommand
 } | ConvertTo-Json
 
+Write-Host "=== Debug Info ==="
+Write-Host "URL: $url"
+Write-Host "Command: $broadcastCommand"
+Write-Host "Headers:" ($headers | ConvertTo-Json)
+Write-Host "Body:" $body
+Write-Host ""
+
 try {
-    $response = Invoke-RestMethod -Uri $url -Method Post -Headers $headers -Body $body
+    Write-Host "Attempting to send broadcast..."
+    $response = Invoke-RestMethod -Uri $url -Method Post -Headers $headers -Body $body -Verbose
     Write-Host "Broadcast sent successfully!"
     Write-Host "Message: $message"
     Write-Host "Response:"
     $response | ConvertTo-Json -Depth 10
 } catch {
     Write-Host "Error broadcasting message:"
-    Write-Host $_.Exception.Message
+    Write-Host "Exception Type: " $_.Exception.GetType().FullName
+    Write-Host "Message: " $_.Exception.Message
+    Write-Host "Response Status Code: " $_.Exception.Response.StatusCode
+    Write-Host "Response Status Description: " $_.Exception.Response.StatusDescription
 }
+
+Write-Host "`nPress Enter to exit..."
+$null = Read-Host
