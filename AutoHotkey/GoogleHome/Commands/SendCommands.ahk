@@ -12,6 +12,11 @@ WinHide "ahk_class ConsoleWindowClass"
 command := A_Clipboard
 
 ; Run the PowerShell script with the clipboard content
-RunWait "PowerShell.exe -NoProfile -ExecutionPolicy Bypass -File `"C:\Users\pyjoh\Documents\Espanso-AHK\AutoHotkey\GoogleHome\Commands\send_text_command.ps1`" -command `"" command "`""
+try {
+    RunWait "PowerShell.exe -NoProfile -ExecutionPolicy Bypass -File `"" A_ScriptDir "\send_text_command.ps1`" -command `"" command "`""
+} catch Error as e {
+    MsgBox "Error running command script: " e.Message
+    ExitApp
+}
 
 ExitApp
