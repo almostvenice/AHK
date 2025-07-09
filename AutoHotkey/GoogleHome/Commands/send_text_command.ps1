@@ -1,3 +1,10 @@
+# Check if running as administrator
+if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    # Relaunch the script with admin privileges
+    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -command `"$command`"" -Verb RunAs
+    exit
+}
+
 param(
     [Parameter(Mandatory=$true)]
     [string]$command
