@@ -37,18 +37,58 @@ Add-Content $logFile "Body: $body"
 # Test connection first
 Add-Content $logFile "`nTesting connection..."
 try {
-    $testConnection = Test-NetConnection -ComputerName "192.168.4.219" -Port 8123
-    Add-Content $logFile "Connection Test: $($testConnection.TcpTestSucceeded)"
+    # Set timeout to 10 seconds
+    $timeoutMs = 10000
+    $ping = New-Object System.Net.NetworkInformation.Ping
+    $result = $ping.Send("192.168.4.219", $timeoutMs)
+    Add-Content $logFile "Ping Result: $($result.Status)"
+    
+    if ($result.Status -eq 'Success') {
+        try {
+            $tcpClient = New-Object System.Net.Sockets.TcpClient
+            $connectResult = $tcpClient.BeginConnect("192.168.4.219", 8123, $null, $null)
+            $waitResult = $connectResult.AsyncWaitHandle.WaitOne($timeoutMs)
+            
+            if ($waitResult) {
+                $tcpClient.EndConnect($connectResult)
+                Add-Content $logFile "TCP Connection: Success"
+            } else {
+                Add-Content $logFile "TCP Connection: Timeout"
+            }
+            $tcpClient.Close()
+        } catch {
+            Add-Content $logFile "TCP Connection Error: $($_.Exception.Message)"
+        }
+    }
 } catch {
-    Add-Content $logFile "Connection Test Error: $($_.Exception.Message)"
+    Add-Content $logFile "Ping Error: $($_.Exception.Message)"
 }
 
 # Attempt the broadcast
 Add-Content $logFile "`nAttempting broadcast..."
 try {
-    $response = Invoke-RestMethod -Uri $url -Method Post -Headers $headers -Body $body -Verbose
+    # Create web request with timeout
+    $webRequest = [System.Net.WebRequest]::Create($url)
+    $webRequest.Method = "POST"
+    $webRequest.ContentType = "application/json"
+    $webRequest.Headers.Add("Authorization", "Bearer $token")
+    $webRequest.Timeout = 10000  # 10 second timeout
+    
+    # Send the request
+    Add-Content $logFile "Sending web request..."
+    $requestStream = $webRequest.GetRequestStream()
+    $writer = New-Object System.IO.StreamWriter($requestStream)
+    $writer.Write($body)
+    $writer.Close()
+    
+    # Get the response
+    $response = $webRequest.GetResponse()
+    $responseStream = $response.GetResponseStream()
+    $reader = New-Object System.IO.StreamReader($responseStream)
+    $responseContent = $reader.ReadToEnd()
+    
     Add-Content $logFile "Broadcast successful!"
-    Add-Content $logFile "Response: $(ConvertTo-Json $response -Depth 10)"
+    Add-Content $logFile "Response: $responseContent"
     
     Write-Host "Broadcast sent successfully!"
     Write-Host "Message: $message"
