@@ -12,11 +12,6 @@ WinHide "ahk_class ConsoleWindowClass"
 command := A_Clipboard
 
 ; Run the PowerShell script with the clipboard content
-try {
-    RunWait "PowerShell.exe -NoProfile -ExecutionPolicy Bypass -File `"" A_ScriptDir "\send_text_command.ps1`" -command `"" command "`""
-} catch Error as e {
-    MsgBox "Error running command script: " e.Message
-    ExitApp
-}
+RunWait "PowerShell.exe -NoProfile -ExecutionPolicy Bypass -File `"" A_ScriptDir "\send_text_command.ps1`" -command `"" command "`""
 
 ExitApp
