@@ -1,6 +1,9 @@
 #Requires AutoHotkey v2.0
 ; This script broadcasts clipboard content to all Google Home devices
-
+if !A_IsAdmin {
+    try Run '*RunAs "' A_ScriptFullPath '"'
+    ExitApp
+}
 ; Hide any command windows that appear
 DllCall("AllocConsole")
 WinHide "ahk_class ConsoleWindowClass"
