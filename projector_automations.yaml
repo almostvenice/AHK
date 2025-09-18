@@ -1,0 +1,128 @@
+- id: 'projector_power'
+  alias: projector_power
+  trigger:
+    platform: webhook
+    webhook_id: projector_power
+  action:
+    - service: light.toggle
+      target:
+        entity_id:
+            - light.projector
+    - delay:
+        milliseconds: 100
+    - service: light.toggle
+      target:
+        entity_id: 
+            - light.projector
+
+- id: 'projector_navigate_up'
+  alias: projector_navigate_up
+  trigger:
+    platform: webhook
+    webhook_id: projector_navigate_up
+  action:
+    - service: button.press
+      target:
+        entity_id: button.projector_increase_flame
+
+- id: 'projector_navigate_down'
+  alias: projector_navigate_down
+  trigger:
+    platform: webhook
+    webhook_id: projector_navigate_down
+  action:
+    - service: button.press
+      target:
+        entity_id: button.projector_decrease_flame
+
+- id: 'projector_toggle_show'
+  alias: projector_toggle_show
+  trigger:
+    platform: webhook
+    webhook_id: projector_toggle_show
+  action:
+    - service: light.toggle
+      target:
+        entity_id: light.projector_light
+
+- id: 'projector_low_high_light'
+  alias: projector_low_high_light
+  trigger:
+    platform: webhook
+    webhook_id: projector_low_high_light
+  action:
+    - service: light.toggle
+      target:
+        entity_id:
+          - light.projector2
+
+- id: 'projector_navigate_left'
+  alias: projector_navigate_left
+  trigger:
+    platform: webhook
+    webhook_id: projector_navigate_left
+  action:
+    - service: button.press
+      target:
+        entity_id: button.projector2_increase_flame
+
+- id: 'projector_navigate_right'
+  alias: projector_navigate_right
+  trigger:
+    platform: webhook
+    webhook_id: projector_navigate_right
+  action:
+    - service: button.press
+      target:
+        entity_id: button.projector2_decrease_flame
+
+- id: 'projector_menu'
+  alias: projector_menu
+  trigger:
+    platform: webhook
+    webhook_id: projector_menu
+  action:
+    - service: light.toggle
+      target:
+        entity_id: light.projector2_light
+
+- id: 'projector_navigate_select'
+  alias: projector_navigate_select
+  trigger:
+    platform: webhook
+    webhook_id: projector_navigate_select
+  action:
+    - service: light.toggle
+      target:
+        entity_id:
+          - light.projector3
+
+- id: 'projector_navigate_back'
+  alias: projector_navigate_back
+  trigger:
+    platform: webhook
+    webhook_id: projector_navigate_back
+  action:
+    - service: button.press
+      target:
+        entity_id: button.projector3_increase_flame
+
+- id: 'projector_zoom_in'
+  alias: projector_zoom_in
+  trigger:
+    platform: webhook
+    webhook_id: projector_zoom_in
+  action:
+    - service: button.press
+      target:
+        entity_id: button.projector3_decrease_flame
+
+- id: 'projector_zoom_out'
+  alias: projector_zoom_out
+  trigger:
+    platform: webhook
+    webhook_id: projector_zoom_out
+  action:
+    - service: light.toggle
+      target:
+        entity_id: light.projector3_light
