@@ -13,7 +13,7 @@ export const SuggestionBadges: React.FC<SuggestionBadgesProps> = ({
   insertPredictedWord,
   insertSuggestion,
 }) => {
-  const allSuggestions = [...predictedWords, ...suggestions].slice(0, 8); // Combina y limita a 8
+  const allSuggestions = [...predictedWords, ...suggestions].slice(0, 5); // Combina y limita a 8
 
   return (
     <div
@@ -62,7 +62,7 @@ export const SuggestionBadges: React.FC<SuggestionBadgesProps> = ({
           </div>
         ))
       ) : (
-        <span style={{ color: "#888", fontSize: "14px" }}>
+        <span style={{ color: "#888", fontSize: "24px",padding: "16px 20px", }}>
           No suggestions available
         </span>
       )}
