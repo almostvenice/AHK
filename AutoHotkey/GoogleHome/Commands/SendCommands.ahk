@@ -51,7 +51,7 @@ switch command {
             WriteLog("Fireplace ON - Iteration " i " of 4 - Command completed")
             if (i < 4) {
                 WriteLog("Fireplace ON - Waiting 300ms before next iteration")
-                Sleep 300
+                Sleep 400
             }
         }
         WriteLog("Fireplace ON - Loop completed (all 4 iterations)")
@@ -63,7 +63,7 @@ switch command {
             WriteLog("Fireplace OFF - Iteration " i " of 4 - Command completed")
             if (i < 4) {
                 WriteLog("Fireplace OFF - Waiting 300ms before next iteration")
-                Sleep 300
+                Sleep 400
             }
         }
         WriteLog("Fireplace OFF - Loop completed (all 4 iterations)")
