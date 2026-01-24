@@ -42,36 +42,95 @@ switch command {
     case "Hey Google, Turn Back Door Lock OFF":
         RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'unlock_back_door"'
     
-    
+
     ; Fireplace
     case "Hey Google, Turn Fireplace ON":
-        WriteLog("Fireplace ON - Starting loop (4 iterations)")
-        for i in [1, 2, 3, 4] {
-            WriteLog("Fireplace ON - Iteration " i " of 4 - Starting command")
+        WriteLog("Fireplace ON - Starting loop #1 (6 iterations)")
+        for i in [1, 2, 3, 4, 5, 6] {
+            WriteLog("Fireplace ON - Loop #1 - Iteration " i " of 6 - Starting command")
             RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'fireplace_increase"'
-            WriteLog("Fireplace ON - Iteration " i " of 4 - Command completed")
-            if (i < 4) {
-                WriteLog("Fireplace ON - Waiting 750ms before next iteration")
-                Sleep 750
+            WriteLog("Fireplace ON - Loop #1 - Iteration " i " of 6 - Command completed")
+            if (i < 6) {
+                WriteLog("Fireplace ON - Loop #1 - Waiting 850ms before next iteration")
+                Sleep 850
             }
         }
-        WriteLog("Fireplace ON - Loop completed (all 4 iterations)")
+
+        WriteLog("Fireplace ON - Loop #1 completed - Waiting 8000ms before loop #2")
+        Sleep 8000
+
+        WriteLog("Fireplace ON - Starting loop #2 (6 iterations)")
+        for i in [1, 2, 3, 4, 5, 6] {
+            WriteLog("Fireplace ON - Loop #2 - Iteration " i " of 6 - Starting command")
+            RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'fireplace_increase"'
+            WriteLog("Fireplace ON - Loop #2 - Iteration " i " of 6 - Command completed")
+            if (i < 6) {
+                WriteLog("Fireplace ON - Loop #2 - Waiting 850ms before next iteration")
+                Sleep 850
+            }
+        }
+        WriteLog("Fireplace ON - Loop #2 completed (all done)")
 
     case "Hey Google, Turn Fireplace OFF":
-        WriteLog("Fireplace OFF - Starting loop (4 iterations)")
-        for i in [1, 2, 3, 4] {
-            WriteLog("Fireplace OFF - Iteration " i " of 4 - Starting command")
+        WriteLog("Fireplace OFF - Starting loop #1 (8 iterations)")
+        for i in [1, 2, 3, 4, 5, 6, 7, 8] {
+            WriteLog("Fireplace OFF - Loop #1 - Iteration " i " of 8 - Starting command")
             RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'fireplace_decrease"'
-            WriteLog("Fireplace OFF - Iteration " i " of 4 - Command completed")
-            if (i < 4) {
-                WriteLog("Fireplace OFF - Waiting 750ms before next iteration")
-                Sleep 750
+            WriteLog("Fireplace OFF - Loop #1 - Iteration " i " of 8 - Command completed")
+            if (i < 8) {
+                WriteLog("Fireplace OFF - Loop #1 - Waiting 850ms before next iteration")
+                Sleep 850
             }
         }
-        WriteLog("Fireplace OFF - Loop completed (all 4 iterations)")
+
+        WriteLog("Fireplace OFF - Loop #1 completed - Waiting 8000ms before loop #2")
+        Sleep 8000
+
+        WriteLog("Fireplace OFF - Starting loop #2 (8 iterations)")
+        for i in [1, 2, 3, 4, 5, 6, 7, 8] {
+            WriteLog("Fireplace OFF - Loop #2 - Iteration " i " of 8 - Starting command")
+            RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'fireplace_decrease"'
+            WriteLog("Fireplace OFF - Loop #2 - Iteration " i " of 8 - Command completed")
+            if (i < 8) {
+                WriteLog("Fireplace OFF - Loop #2 - Waiting 850ms before next iteration")
+                Sleep 850
+            }
+        }
+        WriteLog("Fireplace OFF - Loop #2 completed (all done)")
 
 
-    
+    ; ================= FIREPLACE MANUAL ADJUST =================
+
+    ; -------- TURN FIREPLACE UP (2 presses) --------
+    case "Hey Google, Turn Fireplace UP":
+        WriteLog("Fireplace UP - Starting loop (2 iterations)")
+        for i in [1, 2] {
+            WriteLog("Fireplace UP - Iteration " i " of 2 - Starting command")
+            RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'fireplace_increase"'
+            WriteLog("Fireplace UP - Iteration " i " of 2 - Command completed")
+            if (i < 2) {
+                WriteLog("Fireplace UP - Waiting 850ms before next iteration")
+                Sleep 850
+            }
+        }
+        WriteLog("Fireplace UP - Loop completed (all 2 iterations)")
+
+
+    ; -------- TURN FIREPLACE DOWN (2 presses) --------
+    case "Hey Google, Turn Fireplace DOWN":
+        WriteLog("Fireplace DOWN - Starting loop (2 iterations)")
+        for i in [1, 2] {
+            WriteLog("Fireplace DOWN - Iteration " i " of 2 - Starting command")
+            RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'fireplace_decrease"'
+            WriteLog("Fireplace DOWN - Iteration " i " of 2 - Command completed")
+            if (i < 2) {
+                WriteLog("Fireplace DOWN - Waiting 850ms before next iteration")
+                Sleep 850
+            }
+        }
+        WriteLog("Fireplace DOWN - Loop completed (all 2 iterations)")
+
+
     ; For any other commands, use the regular send_text_command script
     default:
         WriteLog("Default case - Using send_text_command.ps1")
