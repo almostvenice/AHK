@@ -42,31 +42,35 @@ switch command {
     case "Hey Google, Turn Back Door Lock OFF":
         RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'unlock_back_door"'
     
+    
     ; Fireplace
     case "Hey Google, Turn Fireplace ON":
         WriteLog("Fireplace ON - Starting loop (4 iterations)")
         for i in [1, 2, 3, 4] {
             WriteLog("Fireplace ON - Iteration " i " of 4 - Starting command")
-            RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'triple_press_fireplace_increase"'
+            RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'fireplace_increase"'
             WriteLog("Fireplace ON - Iteration " i " of 4 - Command completed")
             if (i < 4) {
-                WriteLog("Fireplace ON - Waiting 300ms before next iteration")
-                Sleep 400
+                WriteLog("Fireplace ON - Waiting 750ms before next iteration")
+                Sleep 750
             }
         }
         WriteLog("Fireplace ON - Loop completed (all 4 iterations)")
+
     case "Hey Google, Turn Fireplace OFF":
         WriteLog("Fireplace OFF - Starting loop (4 iterations)")
         for i in [1, 2, 3, 4] {
             WriteLog("Fireplace OFF - Iteration " i " of 4 - Starting command")
-            RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'triple_press_fireplace_decrease"'
+            RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'fireplace_decrease"'
             WriteLog("Fireplace OFF - Iteration " i " of 4 - Command completed")
             if (i < 4) {
-                WriteLog("Fireplace OFF - Waiting 300ms before next iteration")
-                Sleep 400
+                WriteLog("Fireplace OFF - Waiting 750ms before next iteration")
+                Sleep 750
             }
         }
         WriteLog("Fireplace OFF - Loop completed (all 4 iterations)")
+
+
     
     ; For any other commands, use the regular send_text_command script
     default:
