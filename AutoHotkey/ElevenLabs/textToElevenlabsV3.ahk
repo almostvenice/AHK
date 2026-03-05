@@ -147,7 +147,6 @@ ElevenLabs_TextToSpeech(args) {
 ; ========== Run when executed as script (speak clipboard) ==========
 if (A_ScriptFullPath = A_LineFile) {
     #SingleInstance Force
-    Persistent
     text := Trim(A_Clipboard)
     if (text = "") {
         MsgBox "Clipboard is empty. Copy some text and run again.", "ElevenLabs TTS v3", "Icon!"
@@ -155,6 +154,6 @@ if (A_ScriptFullPath = A_LineFile) {
     }
     ElevenLabs_TextToSpeech({
         text: text,
-        onAudioEnd: () => (ToolTip("Done"), SetTimer(() => ToolTip(), -2000))
+        onAudioEnd: () => ExitApp()
     })
 }
