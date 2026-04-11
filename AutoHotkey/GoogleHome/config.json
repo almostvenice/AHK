@@ -1,5 +1,10 @@
 {
     "hass_url": "http://192.168.4.219:8123",
+    "thermostat_entities": {
+        "Kitchen": "climate.kitchen",
+        "Master Bedroom": "climate.master_bedroom",
+        "Upstairs": "climate.upstairs_2"
+    },
     "devices": {
         "Family Room TV": "Family Room tv",
         "Living Room TV": "Living Room tv"

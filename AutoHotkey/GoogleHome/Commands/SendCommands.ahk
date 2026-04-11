@@ -15,9 +15,28 @@ WriteLog(message) {
     FileAppend timestamp " - " message "`n", logFile
 }
 
-; Get clipboard content
-command := A_Clipboard
+; Clipboard = full phrase (same idea as fireplace: GRID/Home feeds text, this script runs).
+command := StrReplace(StrReplace(A_Clipboard, Chr(0x00A0), " "), "`r", "")
+command := RTrim(Trim(command), " `t`r`n" Chr(34) "'")
+while InStr(command, "  ")
+    command := StrReplace(command, "  ", " ")
 WriteLog("Script started. Command: " command)
+
+; Thermostat: any whole-number temp; rooms Kitchen / Master Bedroom / Upstairs; Cool or Heat.
+; Examples: "Hey Google, Turn Kitchen Thermostat To Cool To 72"
+; Also allows Set, optional "the", optional "degrees", flexible spacing (GRID3-safe).
+thermostatPat := "i)^Hey Google,\s*(?:Turn|Set)\s+(?:the\s+)?(Kitchen|Master Bedroom|Upstairs)\s+Thermostat\s+To\s+(Cool|Heat)\s+To\s+(\d+)(?:\s*degrees?)?\s*\.?\s*$"
+if RegExMatch(command, thermostatPat, &tm) {
+    loc := tm[1]
+    mode := StrLower(tm[2])
+    temp := tm[3]
+    WriteLog("Thermostat - " loc " -> " mode " " temp " (set_thermostat.ps1)")
+    ps1 := A_ScriptDir "\set_thermostat.ps1"
+    exitCode := RunWait(Format('powershell.exe -NoProfile -ExecutionPolicy Bypass -File "{1}" -location "{2}" -hvacMode "{3}" -temperature {4}', ps1, loc, mode, temp))
+    WriteLog("Thermostat script finished (exit " exitCode ")")
+    WriteLog("Script ending")
+    ExitApp
+}
 
 ; Base URL for all webhooks
 baseUrl := "http://192.168.4.219:8123/api/webhook/"
@@ -133,6 +152,8 @@ switch command {
 
     ; For any other commands, use the regular send_text_command script
     default:
+        if InStr(StrLower(command), "thermostat")
+            WriteLog("Default case - text mentions thermostat but did not match thermostat pattern; using send_text_command.ps1. Compare command line above.")
         WriteLog("Default case - Using send_text_command.ps1")
         RunWait "PowerShell.exe -NoProfile -ExecutionPolicy Bypass -File `"" A_ScriptDir "\send_text_command.ps1`" -command `"" command "`""
 }
