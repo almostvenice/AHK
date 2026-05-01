@@ -150,6 +150,86 @@ switch command {
         WriteLog("Fireplace DOWN - Loop completed (all 2 iterations)")
 
 
+    ; ================================================================================
+    ; HDMI_SWITCH — template (hardware arrives later)
+    ; Same idea as Fireplace UP/DOWN: webhook(s) + Sleep between repeats.
+    ;
+    ; In Home Assistant, create Webhook automations whose IDs match the strings below
+    ; (full URL = baseUrl .. slug, e.g. .../api/webhook/HDMI_Switch_Next).
+    ;
+    ; TEMPLATE / tune after install:
+    ;   - If one IR/button press per action is enough: change loops from [1, 2] to [1].
+    ;   - Tweak Sleep 850 if the switch misses commands.
+    ;   - Delete or add "INPUT N" cases to match your port count.
+    ; ================================================================================
+
+    ; =================
+    ; SWITCH NEXT
+    ; =================
+    ; Webhook slug: HDMI_Switch_Next
+    case "Hey Google, Turn HDMI Switch NEXT":
+        WriteLog("HDMI_Switch NEXT - Starting loop (2 iterations)")
+        for i in [1, 2] {
+            WriteLog("HDMI_Switch NEXT - Iteration " i " of 2 - Starting command")
+            RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'HDMI_Switch_Next"'
+            WriteLog("HDMI_Switch NEXT - Iteration " i " of 2 - Command completed")
+            if (i < 2) {
+                WriteLog("HDMI_Switch NEXT - Waiting 850ms before next iteration")
+                Sleep 850
+            }
+        }
+        WriteLog("HDMI_Switch NEXT - Loop completed (all 2 iterations)")
+
+    ; ----------------
+    ; SWITCH BACK
+    ; ----------------
+    ; Webhook slug: HDMI_Switch_Back
+    case "Hey Google, Turn HDMI Switch BACK":
+        WriteLog("HDMI_Switch BACK - Starting loop (2 iterations)")
+        for i in [1, 2] {
+            WriteLog("HDMI_Switch BACK - Iteration " i " of 2 - Starting command")
+            RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'HDMI_Switch_Back"'
+            WriteLog("HDMI_Switch BACK - Iteration " i " of 2 - Command completed")
+            if (i < 2) {
+                WriteLog("HDMI_Switch BACK - Waiting 850ms before next iteration")
+                Sleep 850
+            }
+        }
+        WriteLog("HDMI_Switch BACK - Loop completed (all 2 iterations)")
+
+    ; =================
+    ; SWITCH INPUT 1
+    ; =================
+    ; Webhook slug: HDMI_Switch_Input_1
+    case "Hey Google, Turn HDMI Switch To Input 1":
+        WriteLog("HDMI_Switch - Input 1")
+        RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'HDMI_Switch_Input_1"'
+
+    ; =================
+    ; SWITCH INPUT 2
+    ; =================
+    ; Webhook slug: HDMI_Switch_Input_2
+    case "Hey Google, Turn HDMI Switch To Input 2":
+        WriteLog("HDMI_Switch - Input 2")
+        RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'HDMI_Switch_Input_2"'
+
+    ; =================
+    ; SWITCH INPUT 3
+    ; =================
+    ; Webhook slug: HDMI_Switch_Input_3
+    case "Hey Google, Turn HDMI Switch To Input 3":
+        WriteLog("HDMI_Switch - Input 3")
+        RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'HDMI_Switch_Input_3"'
+
+    ; =================
+    ; SWITCH INPUT 4
+    ; =================
+    ; Webhook slug: HDMI_Switch_Input_4
+    case "Hey Google, Turn HDMI Switch To Input 4":
+        WriteLog("HDMI_Switch - Input 4")
+        RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl 'HDMI_Switch_Input_4"'
+
+
     ; For any other commands, use the regular send_text_command script
     default:
         if InStr(StrLower(command), "thermostat")
