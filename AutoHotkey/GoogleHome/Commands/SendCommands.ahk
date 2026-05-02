@@ -22,6 +22,21 @@ WriteLog("Script started. Command: " command)
 ; Base URL for all webhooks
 baseUrl := "http://192.168.4.219:8123/api/webhook/"
 
+; HDMI: avoid default → send_text_command (Google Assistant may act on unrelated devices like shower heater).
+if RegExMatch(command, "i)^\s*Hey Google,?\s+Turn\s+HDMI\s+Switch\s+(UP|DOWN)\s*\.?\s*$", &hdmiDir) {
+    wh := StrUpper(hdmiDir[1]) = "UP" ? "hdmi_switch_up" : "hdmi_switch_down"
+    WriteLog("HDMI Switch " hdmiDir[1] " — webhooks only (" wh "), 2 presses")
+    loop 2 {
+        RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl wh '"'
+        if (A_Index < 2) {
+            WriteLog("HDMI — waiting 850ms before next press")
+            Sleep 850
+        }
+    }
+    WriteLog("Script ending")
+    ExitApp
+}
+
 ; Handle all commands using switch statement
 switch command {
     ; Front Door Lock
