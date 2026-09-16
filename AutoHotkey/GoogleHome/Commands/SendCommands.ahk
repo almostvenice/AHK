@@ -22,6 +22,44 @@ WriteLog("Script started. Command: " command)
 ; Base URL for all webhooks
 baseUrl := "http://192.168.4.219:8123/api/webhook/"
 
+; Old Google Home name. The live device is Headboard Strip Light.
+if InStr(command, "Light Strip B") {
+    command := StrReplace(command, "Light Strip B", "Headboard Strip Light")
+    WriteLog("Mapped Light Strip B to Headboard Strip Light. Command: " command)
+}
+
+; Grid 3 Headboard Strip Light tiles → Home Assistant webhooks → Google Assistant.
+; Bare "Turn Headboard Strip Light" (no color/on/off) defaults to white.
+if RegExMatch(command, "i)Turn\s+Headboard Strip Light\s*$") {
+    command := RTrim(command) " White"
+    WriteLog("Defaulted Headboard Strip Light to White. Command: " command)
+}
+if RegExMatch(command, "i)Turn\s+Headboard Strip Light\s+(ON|OFF|Blue|Red|Green|Purple|Orange|Yellow|White)\s*\.?\s*$", &stripCmd) {
+    key := StrLower(stripCmd[1])
+    wh := "headboard_strip_" key
+    WriteLog("Headboard Strip Light " stripCmd[1] " — webhook " wh)
+    RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl wh '"'
+    WriteLog("Script ending")
+    ExitApp
+}
+
+; Grid 3 Connect/Disconnect Bose Soundbar + Google Assistant: Windows playback only (does not power the bar).
+playbackScript := A_ScriptDir "\..\..\WindowsScripts\Set-PlaybackDevice.ps1"
+if RegExMatch(command, "i)Connect\s+Bose(\s+Smart)?\s+Soundbar") {
+    WriteLog("Connect Bose Soundbar — PC playback only, no Google power command")
+    RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' playbackScript '" -Action "ON" -LogFile "' logFile '"'
+    WriteLog("Script ending")
+    ExitApp
+}
+if RegExMatch(command, "i)Disconnect\s+Bose(\s+Smart)?\s+Soundbar") {
+    WriteLog("Disconnect Bose Soundbar — PC playback to speakers, no Google power command")
+    RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' playbackScript '" -Action "OFF" -LogFile "' logFile '"'
+    WriteLog("Script ending")
+    ExitApp
+}
+
+; Bose Soundbar + ON/OFF + Google Assistant: power only (falls through to send_text_command).
+
 ; HDMI: avoid default → send_text_command (Google Assistant may act on unrelated devices like shower heater).
 if RegExMatch(command, "i)^\s*Hey Google,?\s+Turn\s+HDMI\s+Switch\s+(UP|DOWN)\s*\.?\s*$", &hdmiDir) {
     wh := StrUpper(hdmiDir[1]) = "UP" ? "hdmi_switch_up" : "hdmi_switch_down"
