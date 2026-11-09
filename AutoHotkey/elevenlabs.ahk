@@ -6,10 +6,20 @@
 ;   elevenlabs.ahk "Text to speak"
 ;   elevenlabs.ahk "Text" --voice-id <id> --output speech.mp3
 ;   elevenlabs.ahk  (uses clipboard if no args)
+;   elevenlabs.ahk stop   (stops playback and closes the running script)
 ;
 ; Config: .env in script dir with API_KEY and VOICE_ID (or parent .env)
 
 #SingleInstance Force
+OnExit(StopPlayback)
+
+; Grid 3 launches this script again with the argument "stop".
+; #SingleInstance Force closes the copy that is playing, and that copy
+; stops its audio from OnExit. This copy then exits without speaking.
+if (IsStopRequest()) {
+    StopPlayback()
+    ExitApp
+}
 
 BASE_URL := "https://api.elevenlabs.io/v1"
 DEFAULT_MODEL_ID := "eleven_v4"
@@ -91,7 +101,7 @@ if !FileExist(csvFile)
 
 text := NormalizeText(text)
 if (existingFile := FindExistingAudio(text)) {
-    SoundPlay(existingFile, 1)
+    PlayAndWait(existingFile)
     ExitApp
 }
 
@@ -105,6 +115,39 @@ if (voiceID = "" || voiceID = "undefined" || voiceID = "null") {
 }
 
 ; ========== ElevenLabs v3 TTS ==========
+IsStopRequest() {
+    if (A_Args.Length = 0)
+        return false
+    joined := ""
+    for arg in A_Args
+        joined .= (joined = "" ? "" : " ") arg
+    joined := Trim(joined, " `t`"`'")
+    return (joined = "stop" || joined = "--stop" || joined = "/stop")
+}
+
+Mci(cmd, returnResult := false) {
+    buf := Buffer(256, 0)
+    DllCall("winmm\mciSendStringW", "Str", cmd, "Ptr", buf, "UInt", 127, "Ptr", 0)
+    return returnResult ? StrGet(buf) : ""
+}
+
+StopPlayback(*) {
+    Mci("stop elevenlabsTts")
+    Mci("close elevenlabsTts")
+    DllCall("winmm\PlaySound", "Ptr", 0, "Ptr", 0, "UInt", 0x40)
+}
+
+PlayAndWait(path) {
+    Mci('open "' path '" type mpegvideo alias elevenlabsTts')
+    Mci("play elevenlabsTts")
+    Loop {
+        if (Mci("status elevenlabsTts mode", true) != "playing")
+            break
+        Sleep 150
+    }
+    StopPlayback()
+}
+
 NormalizeText(text) {
     text := Trim(text, " `t`r`n")
     text := StrReplace(text, "`r`n", "`n")
@@ -187,7 +230,7 @@ try {
     adoStream.Close()
 
     AddToCSV(text, output, timestamp)
-    SoundPlay(output, 1)
+    PlayAndWait(output)
 } catch as err {
     MsgBox "Error: " err.Message
     ExitApp 1
