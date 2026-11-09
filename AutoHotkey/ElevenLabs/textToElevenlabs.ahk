@@ -1,21 +1,34 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
-; Read environment variables from .env file
-envFile := A_ScriptDir "\..\\.env"
+; Read environment variables from .env file.
+; Script lives in AutoHotkey\ElevenLabs, so the repo .env is two folders up.
+envFile := ""
+for candidate in [A_ScriptDir "\..\..\.env", A_ScriptDir "\..\.env", A_ScriptDir "\.env"] {
+    if FileExist(candidate) {
+        envFile := candidate
+        break
+    }
+}
 apiKey := ""
 voiceID := ""
 
-if FileExist(envFile) {
+if (envFile != "") {
     Loop Read, envFile {
         ; Skip comments and empty lines
         if (RegExMatch(A_LoopReadLine, "^\s*#") || A_LoopReadLine = "")
             continue
-            
+
         ; Match "KEY = VALUE" pattern, ignoring spaces and comments
-        if RegExMatch(A_LoopReadLine, "^API_KEY\s*=\s*([^#\s]+)", &match)
+        if RegExMatch(A_LoopReadLine, "i)^\s*API_KEY\s*=\s*([^#\s]+)", &match)
             apiKey := match[1]
-        else if RegExMatch(A_LoopReadLine, "^VOICE_ID\s*=\s*([^#\s]+)", &match)
+        else if RegExMatch(A_LoopReadLine, "i)^\s*VITE_ELEVENLABS_API_KEY\s*=\s*([^#\s]+)", &match)
+            apiKey := match[1]
+        else if RegExMatch(A_LoopReadLine, "i)^\s*VOICE_ID\s*=\s*([^#\s]+)", &match)
+            voiceID := match[1]
+        else if RegExMatch(A_LoopReadLine, "i)^\s*VITE_ELEVENLABS_VOICE_ID\s*=\s*([^#\s]+)", &match)
+            voiceID := match[1]
+        else if RegExMatch(A_LoopReadLine, "i)^\s*ELEVENLABS_VOICE_ID\s*=\s*([^#\s]+)", &match)
             voiceID := match[1]
     }
     

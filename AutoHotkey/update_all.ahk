@@ -7,6 +7,7 @@ if !A_IsAdmin {
 
 ; Define paths dynamically
 repoPath := A_ScriptDir "\.."  ; Go up one directory from the script location
+predictionRepoPath := A_MyDocuments "\eyegazers-proof-of-concept"
 gitPath := GetGitPath()  ; Get Git executable dynamically
 logFile := A_Desktop "\update_log.txt"  ; Store log on desktop for easier access
 branch := "main"  ; Change this if using a different branch
@@ -137,6 +138,15 @@ for window in windows {
         if !WinGetMinMax("ahk_id " window) {
             WinMinimize("ahk_id " window)
         }
+    }
+}
+
+if DirExist(predictionRepoPath) {
+    try {
+        resetExitCode := RunWait(Format('cmd.exe /c cd /d "{}" && npm run reset-prediction-data && npm run generate-dictionary', predictionRepoPath), , "Hide")
+        FileAppend("Prediction data refresh finished with exit code " resetExitCode " at " A_Now "`n", logFile, "UTF-8")
+    } catch {
+        FileAppend("Prediction data refresh failed at " A_Now "`n", logFile, "UTF-8")
     }
 }
 
