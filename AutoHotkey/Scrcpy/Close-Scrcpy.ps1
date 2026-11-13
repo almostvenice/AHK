@@ -18,7 +18,8 @@ try {
     }
 
     if (Test-CommandAvailable 'adb') {
-        & adb disconnect $Device | Out-Host
+        Start-AdbServer
+        & adb disconnect $Device 2>&1 | Out-Host
         Write-Host "Disconnected $Device."
     }
     else {

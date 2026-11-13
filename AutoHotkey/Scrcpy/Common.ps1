@@ -61,9 +61,58 @@ function Resolve-Device {
     return $Device.Trim()
 }
 
+function Stop-AdbProcesses {
+    Get-Process -Name 'adb' -ErrorAction SilentlyContinue |
+        Stop-Process -Force -ErrorAction SilentlyContinue
+}
+
+function Start-AdbServerOnce {
+    param(
+        [Parameter(Mandatory)][string]$AdbPath,
+        [Parameter(Mandatory)][int]$TimeoutSeconds
+    )
+
+    # adb hangs on Windows when its first start inherits a redirected console.
+    # ShellExecute gives the server its own console so startup can finish.
+    $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+    $startInfo.FileName = $AdbPath
+    $startInfo.Arguments = 'start-server'
+    $startInfo.UseShellExecute = $true
+    $startInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
+
+    $proc = New-Object System.Diagnostics.Process
+    $proc.StartInfo = $startInfo
+    [void]$proc.Start()
+
+    if (-not $proc.WaitForExit($TimeoutSeconds * 1000)) {
+        Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+        return $false
+    }
+
+    return ($proc.ExitCode -eq 0)
+}
+
+function Start-AdbServer {
+    $adb = (Get-Command -Name 'adb' -ErrorAction Stop).Source
+
+    if (Start-AdbServerOnce -AdbPath $adb -TimeoutSeconds 15) {
+        return
+    }
+
+    Write-Host 'adb server did not finish starting. Closing stuck adb and trying again...'
+    Stop-AdbProcesses
+    Start-Sleep -Seconds 1
+
+    if (-not (Start-AdbServerOnce -AdbPath $adb -TimeoutSeconds 15)) {
+        Stop-AdbProcesses
+        throw 'adb is stuck starting its server on port 5037. In Task Manager, end every adb.exe, allow adb through Windows Firewall if a prompt is open, then run this again.'
+    }
+}
+
 function Connect-AdbDevice {
     param([Parameter(Mandatory)][string]$Device)
 
+    Start-AdbServer
     Write-Host "Connecting to $Device ..."
     $connectOutput = & adb connect $Device 2>&1 | Out-String
     Write-Host $connectOutput.Trim()
