@@ -1,4 +1,4 @@
-# Connects adb to the phone. Installs platform-tools first when adb is missing.
+# Connects adb to the phone, using the adb.exe shipped with the matching scrcpy build.
 param(
     [string]$Device = ''
 )
@@ -7,7 +7,7 @@ param(
 
 try {
     $Device = Resolve-Device $Device
-    Ensure-Command -Name 'adb' -WingetId 'Google.PlatformTools'
+    Ensure-ScrcpyTools
     Connect-AdbDevice -Device $Device
 }
 catch {

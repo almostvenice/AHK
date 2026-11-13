@@ -8,22 +8,23 @@ param(
 try {
     $Device = Resolve-Device $Device
 
-    $procs = Get-Process -Name 'scrcpy' -ErrorAction SilentlyContinue
-    if ($procs) {
-        $procs | Stop-Process -Force
+    $mirror = Get-Process -Name 'scrcpy' -ErrorAction SilentlyContinue
+    if ($mirror) {
+        $mirror | Stop-Process -Force
         Write-Host 'Closed scrcpy.'
     }
     else {
         Write-Host 'scrcpy is not running.'
     }
 
-    if (Test-CommandAvailable 'adb') {
-        Start-AdbServer
-        & adb disconnect $Device 2>&1 | Out-Host
+    # Stopping adb drops the phone connection, including a server stuck on port 5037.
+    $adb = Get-Process -Name 'adb' -ErrorAction SilentlyContinue
+    if ($adb) {
+        Stop-AdbProcesses
         Write-Host "Disconnected $Device."
     }
     else {
-        Write-Host 'adb is not installed, so there was no adb connection to close.'
+        Write-Host "No adb server was running for $Device."
     }
 }
 catch {

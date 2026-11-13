@@ -1,5 +1,6 @@
-# Installs adb and scrcpy when they are missing, connects to the phone, then opens the mirror.
-# Another PC only needs Windows with winget. The phone must already be listening on port 5555.
+# Installs the scrcpy build that matches this PC, connects to the phone, then opens the mirror.
+# A Surface Pro uses the ARM64 build. An Intel or AMD PC uses the x64 build.
+# The phone must already be listening on port 5555.
 param(
     [string]$Device = ''
 )
@@ -8,12 +9,11 @@ param(
 
 try {
     $Device = Resolve-Device $Device
-    Ensure-Command -Name 'adb' -WingetId 'Google.PlatformTools'
-    Ensure-Command -Name 'scrcpy' -WingetId 'Genymobile.scrcpy'
+    Ensure-ScrcpyTools
     Connect-AdbDevice -Device $Device
 
     Write-Host 'Starting scrcpy. Alt+B is Back. Alt+H is Home. Alt+S is Recent apps.'
-    & scrcpy -s $Device
+    & $script:ScrcpyPath -s $Device
     exit $LASTEXITCODE
 }
 catch {
