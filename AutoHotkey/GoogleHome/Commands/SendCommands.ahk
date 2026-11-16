@@ -58,6 +58,25 @@ if RegExMatch(command, "i)Disconnect\s+Bose(\s+Smart)?\s+Soundbar") {
     ExitApp
 }
 
+; Bose speaker controls → Home Assistant webhooks (not Google Assistant).
+boseWebhook := ""
+if RegExMatch(command, "i)Bose(\s+Smart)?(\s+Soundbar|\s+Speaker)?\s+Volume\s+UP")
+    boseWebhook := "volume_up"
+else if RegExMatch(command, "i)Bose(\s+Smart)?(\s+Soundbar|\s+Speaker)?\s+Volume\s+DOWN")
+    boseWebhook := "volume_down"
+else if RegExMatch(command, "i)Bose(\s+Smart)?(\s+Soundbar|\s+Speaker)?\s+(Input\s+Physical|Physical\s+Input)")
+    boseWebhook := "input_physical"
+else if RegExMatch(command, "i)Bose(\s+Smart)?(\s+Soundbar|\s+Speaker)?\s+(Input\s+Bluetooth|Bluetooth\s+Input)")
+    boseWebhook := "input_bluetooth"
+else if RegExMatch(command, "i)Bose(\s+Smart)?(\s+Soundbar|\s+Speaker)?\s+(Bluetooth\s+Pair|Pair\s+Bluetooth)")
+    boseWebhook := "bluetooth_pair"
+if (boseWebhook != "") {
+    WriteLog("Bose speaker — webhook " boseWebhook)
+    RunWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "' A_ScriptDir '\..\WebHooks\call_webhook.ps1" -webhookUrl "' baseUrl boseWebhook '"'
+    WriteLog("Script ending")
+    ExitApp
+}
+
 ; Bose Soundbar + ON/OFF + Google Assistant: power only (falls through to send_text_command).
 
 ; HDMI: avoid default → send_text_command (Google Assistant may act on unrelated devices like shower heater).
